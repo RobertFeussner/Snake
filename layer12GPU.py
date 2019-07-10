@@ -23,7 +23,8 @@ SIZE = 321
 DOWNSAMPLE_SIZE = 50
 FILTERSIZE = 5
 STRIDE = 1
-
+PATH = '/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU'
+BATCHES = 1
 
 # In[11]:
 
@@ -165,6 +166,7 @@ class Net(nn.Module):
 
 
 def loadImages():
+
     test = (torch.randint(0, 10, (3, 3, SIZE, SIZE))) # color, height, width
     return test
     #print(test[1][0][0])
@@ -200,12 +202,12 @@ def initializeFilters(image):
                 for x in range(0, filterWidth, 2):
                     if not ((imageX + (x-middle)) < 0 or (imageX + x) > imageWidth or (imageY + (y-middle)) < 0 or (imageY + y) > imageHeight):
                         #print("test")
-                        filters[imageY][imageX][y][x] = calcDistance(image[0][0][imageY][imageX], 
-                                                                      image[0][1][imageY][imageX], 
-                                                                      image[0][2][imageY][imageX], 
-                                                                      image[0][0][imageY - middle + y][imageX - middle + x], 
-                                                                      image[0][1][imageY - middle + y][imageX - middle + x], 
-                                                                      image[0][2][imageY - middle + y][imageX - middle + x],
+                        filters[imageY][imageX][y][x] = calcDistance(image[0][imageY][imageX], 
+                                                                      image[1][imageY][imageX], 
+                                                                      image[2][imageY][imageX], 
+                                                                      image[0][imageY - middle + y][imageX - middle + x], 
+                                                                      image[1][imageY - middle + y][imageX - middle + x], 
+                                                                      image[2][imageY - middle + y][imageX - middle + x],
                                                                       imageX, imageY, x, y, middle)
                         #print(filters[imageY][imageX][y][x])
                     else:
@@ -215,112 +217,42 @@ def initializeFilters(image):
 
 # In[19]:
 
-images = loadImages()
-#print(images)
-images = images.float()
-images = torch.nn.functional.interpolate(images, size=(DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE), mode="bilinear")
-images = images.cuda()
-#print(images)
-#print(images.size())
-filters = initializeFilters(images)
-#print(filters.size())
-#print(filters.view(25, 3, 3).size())
-#print(filters)
-#print(filters.size())
-filters.unsqueeze_(-3)
-filters.unsqueeze_(-3)
-filters = filters.expand(DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE, 21, 21, FILTERSIZE, FILTERSIZE)
-#print(filters.size())
-#print(filters)
-#print(filters.size())
+for i in range(BATCHES):
+    images = torch.load('/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/images' + str(i)+ '.pth')	# the 3 original images
+    predictions = torch.load('/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/predictions' + str(i)+ '.pth') # b11 3 predictions
+    for j in range(3):
+        image = images[j] # iterate every picture directly
+        prediction = predictions[j]
+        image = image.float()
+        image = torch.nn.functional.interpolate(image, size=(DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE), mode="bilinear")
+        image = image.cuda()
+        filters = initializeFilters(image)
+        print(j)
+        print(filters.size())
+
+#images = loadImages()
+#images = images.float()
+#images = torch.nn.functional.interpolate(images, size=(DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE), mode="bilinear")
+#images = images.cuda()
+
+#filters = initializeFilters(images)
+#filters.unsqueeze_(-3)
+#filters.unsqueeze_(-3)
+#filters = filters.expand(DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE, 21, 21, FILTERSIZE, FILTERSIZE)
 
 
 # In[28]:
 
 
-net = Net()
-net.to("cuda:0")
-#params = list(net.conv1.parameters())
-#print(params[0].size())  # conv1's .weight
-#params = filters
-#print(list(net.conv1.parameters()))
-#print("------------------------------------")
-#print(params)
-#print(net.conv1.weight.size())
-#print(filters.size())
-net.conv1.weight = torch.nn.Parameter(filters)
-net.eval()
-
-#print(net.conv1.weight)
+#net = Net()
+#net.to("cuda:0")
+#net.conv1.weight = torch.nn.Parameter(filters)
+#net.eval()
 
 # In[30]:
 
 
-input = torch.ones(3, 21, DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE)
-#print(input[0][0][0][0])
+#input = torch.ones(3, 21, DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE)
 
 
-out = net(input)
-#print(input)
-print(out.size())
-#print(out[0][0][0][0])
-#print(out)
-
-
-# img = loadimages()
-# output = loadoutput11()
-# filters = initializeFilters(img, output)
-# feedFiltersInLayer(filters)
-# 
-# 
-# def main():
-#     """Create the model and start the training."""
-#     
-#     os.environ["CUDA_VISIBLE_DEVICES"]=str(args.gpu)
-#     h, w = map(int, args.input_size.split(','))
-#     input_size = (h, w)
-# 
-#     cudnn.enabled = True
-# 
-#     # Create network.
-#     model = Net()
-# 
-#     model.cuda()
-#     
-#     cudnn.benchmark = True
-# 
-#     if not os.path.exists(args.snapshot_dir):
-#         os.makedirs(args.snapshot_dir)
-# 
-# 
-#     trainloader = data.DataLoader(VOCDataSet(args.data_dir, args.data_list, max_iters=args.num_steps*args.batch_size, crop_size=input_size, 
-#                     scale=args.random_scale, mirror=args.random_mirror, mean=IMG_MEAN), 
-#                     batch_size=args.batch_size, shuffle=True, num_workers=0, pin_memory=True)
-# 
-# 
-#     for i_iter, batch in enumerate(trainloader):
-#         images, labels, _, _ = batch
-#         images = Variable(images).cuda()
-# 
-#         
-#         pred = model(images)
-# 
-# 
-#         if i_iter >= args.num_steps-1:
-#             print('save model ...')
-#             sys.stdout.flush()
-#             torch.save(model.state_dict(),osp.join(args.snapshot_dir, 'VOC12_scenes_'+str(args.num_steps)+'.pth'))
-#             break
-# 
-#         if i_iter % args.save_pred_every == 0 and i_iter!=0:
-#             print('taking snapshot ...')
-#             sys.stdout.flush()
-#             torch.save(model.state_dict(),osp.join(args.snapshot_dir, 'VOC12_scenes_'+str(i_iter)+'.pth'))     
-# 
-#     end = timeit.default_timer()
-#     print(end-start,'seconds')
-#     sys.stdout.flush()
-# 
-# if __name__ == '__main__':
-#     main()
-# 
+#out = net(input)
