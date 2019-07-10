@@ -61,7 +61,7 @@ gpu0 = 0
 os.environ["CUDA_VISIBLE_DEVICES"]=str(gpu0)
 cudnn.enabled = True
 model = Res_Deeplab(num_classes=21)
-pathToTrainedModel = '/root/FirstTrain10000StepsDefaultParametersBatch6/VOC12_scenes_10000.pth'
+pathToTrainedModel = '/root/20000StepsDefaultParametersBatch6/VOC12_scenes_20000.pth'
 saved_state_dict = torch.load(pathToTrainedModel)
 model.load_state_dict(saved_state_dict)
 model.eval()
