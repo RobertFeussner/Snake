@@ -1,0 +1,8 @@
+ssh snakbot@131.159.60.8
+tumi354
+new one: to be used in the future!
+ssh -p 14237 root@131.159.60.8
+#Work as if on a normal terminal
+
+
+ssh -p 14235 root@131.159.60.8
