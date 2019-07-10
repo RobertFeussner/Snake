@@ -26,7 +26,7 @@ start = timeit.default_timer()
 
 IMG_MEAN = np.array((104.00698793,116.66876762,122.67891434), dtype=np.float32)
 
-BATCH_SIZE = 1 # important, cause new!
+BATCH_SIZE = 3 # important, cause new!
 DATA_DIRECTORY = '/root/VOCdevkit/VOC2012/'
 DATA_LIST_PATH = '/root/Bio-snake-robot/Pytorch-Deeplab/dataset/list/train_aug.txt'
 NUM_CLASSES = 21
@@ -38,7 +38,7 @@ input_size = (h, w)
 
 model = Res_Deeplab(num_classes=21)
 
-pathToTrainedModel = '/root/Bio-snake-robot/Pytorch-Deeplab/FirstTrain10000StepsDefaultParametersBatch6/VOC12_scenes_10000.pth'
+pathToTrainedModel = '/root/FirstTrain10000StepsDefaultParametersBatch6/VOC12_scenes_10000.pth'
 
 # not the following, as we work on CPU (has to be reloaded! on CPU)
 #saved_state_dict = torch.load(pathToTrainedModel)
