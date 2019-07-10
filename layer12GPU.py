@@ -217,18 +217,39 @@ def initializeFilters(image):
 
 # In[19]:
 
+net = Net()
+net.to("cuda:0")
+net.eval()
+
 for i in range(BATCHES):
     images = torch.load('/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/images' + str(i)+ '.pth')	# the 3 original images
+    images = images.float()
+    images = torch.nn.functional.interpolate(images, size=(DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE), mode="bilinear")
+    images = images.cuda()
+
     predictions = torch.load('/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/predictions' + str(i)+ '.pth') # b11 3 predictions
+    predictions = predictions.float()
+    predictions = torch.nn.functional.interpolate(predictions, size=(DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE), mode="bilinear")
+    predictions = predictions.cuda()
+
+    outputs = []
+
     for j in range(3):
         image = images[j] # iterate every picture directly
         prediction = predictions[j]
-        image = image.float()
-        image = torch.nn.functional.interpolate(image, size=(DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE), mode="bilinear")
-        image = image.cuda()
         filters = initializeFilters(image)
-        print(j)
-        print(filters.size())
+        filters.unsqueeze_(-3)
+        filters.unsqueeze_(-3)
+        filters = filters.expand(DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE, 21, 21, FILTERSIZE, FILTERSIZE)
+        net.conv1.weight = torch.nn.Parameter(filters)
+        input = prediction.unsqueeze(0)
+        #print(input.size())
+
+        outputs.append(net(input))
+
+    output = torch.cat((outputs[0], outputs[1], outputs[2]), 0)
+    torch.save(output, "/root/VOC12_After_b12/TrainBatch3TensorsGPU/predictions"+ str(i)+".pth")
+    
 
 #images = loadImages()
 #images = images.float()
