@@ -48,16 +48,11 @@ for i in range(BATCHES):
     predictions = predictions.float()
     #predictions = torch.nn.functional.interpolate(predictions, size=(SIZE,SIZE), mode="bilinear") #upsample them back
     predictions = predictions.cuda()
-    print("predictions are")
-    print(predictions)
 
     #labels = ground truth
     labels = torch.load(PATHb11 + str(i) + '.pth')  #ground truth labels
     labels = labels.float()
     labels = labels.cuda()
-
-    print("labels are")
-    print(labels)
 
 
     for j in range(3):
