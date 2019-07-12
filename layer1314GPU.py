@@ -1,7 +1,11 @@
 import torch
 import torch.nn as nn
+import os
+import collections
 import torch.nn.functional as F
 import torch.backends.cudnn as cudnn
+Module = nn.Module
+from itertools import repeat
 
 unfold = F.unfold
 SIZE = 321
