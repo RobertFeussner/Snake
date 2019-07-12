@@ -11,7 +11,7 @@ unfold = F.unfold
 SIZE = 321
 DOWNSAMPLE_SIZE = 50
 PATHb12 = "/root/VOC12_After_b12/TrainBatch3TensorsGPU/predictions"
-PATHb11 = "/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU"
+PATHb11 = "/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/labels"
 BATCHES = 1 #should be changed to 3525 when I train
 
 os.environ["CUDA_VISIBLE_DEVICES"]=str(0)
