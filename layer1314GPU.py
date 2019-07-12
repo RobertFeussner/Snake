@@ -52,9 +52,8 @@ for i in range(BATCHES):
     print(predictions)
 
     #labels = ground truth
-    labels = torch.load(PATHb11 + str(i) + '.pth')  # b11 labels
-    labels = images.float()
-    #labels = torch.nn.functional.interpolate(images, size=(DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE), mode="bilinear")
+    labels = torch.load(PATHb11 + str(i) + '.pth')  #ground truth labels
+    labels = labels.float()
     labels = labels.cuda()
 
     print("labels are")
