@@ -10,7 +10,8 @@ from itertools import repeat
 unfold = F.unfold
 SIZE = 321
 DOWNSAMPLE_SIZE = 50
-PATH = "/root/VOC12_After_b12/TrainBatch3TensorsGPU/predictions"
+PATHb12 = "/root/VOC12_After_b12/TrainBatch3TensorsGPU/predictions"
+PATHb11 = "/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU"
 BATCHES = 1 #should be changed to 3525 when I train
 
 os.environ["CUDA_VISIBLE_DEVICES"]=str(0)
@@ -41,17 +42,28 @@ class Net(nn.Module):
 net = Net()
 net.to("cuda:0")
 
+#labels --- from Robert's part ---> ground truth
 for i in range(BATCHES):
-    predictions = torch.load(PATH + str(i)+ '.pth') # b12 3 predictions
+    predictions = torch.load(PATHb12 + str(i)+ '.pth') # b12 3 predictions
     predictions = predictions.float()
     #predictions = torch.nn.functional.interpolate(predictions, size=(SIZE,SIZE), mode="bilinear") #upsample them back
     predictions = predictions.cuda()
+    print("predictions are")
+    print(predictions)
 
-    outputs = []
+    #labels = ground truth
+    labels = torch.load(PATHb11 + str(i) + '.pth')  # b11 labels
+    labels = images.float()
+    #labels = torch.nn.functional.interpolate(images, size=(DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE), mode="bilinear")
+    labels = labels.cuda()
+
+    print("labels are")
+    print(labels)
+
 
     for j in range(3):
         prediction = predictions[j]
-        print(prediction)
+        #print(prediction)
 
 
 
