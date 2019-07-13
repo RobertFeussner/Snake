@@ -149,7 +149,9 @@ class Net(nn.Module):
 
     def forward(self, x):
         x = self.conv1(x)
-        A = torch.tensor([[1.0]]).cuda()
+        #A = torch.tensor([[1.0]]).cuda()
+        print(x.size())
+        A = torch.ones(x.size()[2], x.size()[3]).cuda()
         x = F.linear(x, A)
         return x
 
