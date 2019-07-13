@@ -145,17 +145,13 @@ class Net(nn.Module):
         
         #in_height, in_width, in_channels, out_channels, kernel_size, stride=1, padding=0, bias=True, dilation=1
         self.conv1 = Conv2dLocal(DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE, 21, 21, FILTERSIZE, STRIDE, 2, 0, 1)
-        
-        #in-features, out-features
-        #self.linear = nn.Linear (108, 6804)
+
 
     def forward(self, x):
         x = self.conv1(x)
-
-        A = torch.tensor([[1.0]]).cuda()
-        #A = A.cuda()
+        A = torch.randn(2,2).cuda()
+        #A = torch.tensor([[1.0]]).cuda()
         x = F.linear(x, A)
-        #x = self.linear(x)
         return x
 
     def num_flat_features(self, x):
