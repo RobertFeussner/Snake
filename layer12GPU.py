@@ -149,10 +149,8 @@ class Net(nn.Module):
 
     def forward(self, x):
         x = self.conv1(x)
-        #A = torch.randn(2,2).cuda()
-        #A = torch.tensor([[1.0]]).cuda()
-        #x = F.linear(x, A)
-        x = F.relu(x)
+        A = torch.tensor([[1.0]]).cuda()
+        x = F.linear(x, A)
         return x
 
     def num_flat_features(self, x):
