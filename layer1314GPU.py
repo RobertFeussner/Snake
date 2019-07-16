@@ -145,7 +145,7 @@ for epoch in range(num_epochs):
         pred = Variable(all_predictions[i_iter]).cuda()
         label = Variable(labels[i_iter])
 
-        output = interp(model(pred))
+        output = model(pred)
         loss = loss_calc(output, label)
         loss.backward()
         optimizer.step()
