@@ -34,7 +34,7 @@ class Net(nn.Module):
 
     def forward(self, x):
         x = self.conv1(x)
-        A = torch.tensor([[1.0]]).cuda()
+        A = torch.ones(x.size()[2], x.size()[3]).cuda()
         x = F.linear(x,A)
         x = - self.min_pool(-x)
         return x
