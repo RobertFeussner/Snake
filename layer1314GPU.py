@@ -9,7 +9,17 @@ Module = nn.Module
 from itertools import repeat
 from torch.autograd import Variable
 import argparse
-import numpy as np
+import numpy
+import argparse
+from torch.utils import data
+import pickle
+import cv2
+import scipy.misc
+import sys
+import os.path as osp
+import matplotlib.pyplot as plt
+import random
+import timeit
 
 unfold = F.unfold
 num_epochs = 3
@@ -135,7 +145,7 @@ for epoch in range(num_epochs):
         pred = Variable(all_predictions[i_iter]).cuda()
         label = Variable(labels[i_iter])
 
-        output = np.interp(model(pred))
+        output = interp(model(pred))
         loss = loss_calc(output, label)
         loss.backward()
         optimizer.step()
