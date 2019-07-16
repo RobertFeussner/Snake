@@ -58,36 +58,30 @@ os.environ["CUDA_VISIBLE_DEVICES"]=str(0)
 cudnn.enabled = True
 cudnn.benchmark = True
 
-class CrossEntropy2d(nn.Module):
 
-    def __init__(self, size_average=True, ignore_label=255):
-        super(CrossEntropy2d, self).__init__()
-        self.size_average = size_average
-        self.ignore_label = ignore_label
-
-    def forward(self, predict, target, weight=None):
-        """
-            Args:
-                predict:(n, c, h, w)
-                target:(n, h, w)
-                weight (Tensor, optional): a manual rescaling weight given to each class.
-                                           If given, has to be a Tensor of size "nclasses"
-        """
-        assert not target.requires_grad
-        assert predict.dim() == 4
-        assert target.dim() == 3
-        assert predict.size(0) == target.size(0), "{0} vs {1} ".format(predict.size(0), target.size(0))
-        assert predict.size(2) == target.size(1), "{0} vs {1} ".format(predict.size(2), target.size(1))
-        assert predict.size(3) == target.size(2), "{0} vs {1} ".format(predict.size(3), target.size(3))
-        n, c, h, w = predict.size()
-        target_mask = (target >= 0) * (target != self.ignore_label)
-        target = target[target_mask]
-        if not target.data.dim():
-            return Variable(torch.zeros(1))
-        predict = predict.transpose(1, 2).transpose(2, 3).contiguous()
-        predict = predict[target_mask.view(n, h, w, 1).repeat(1, 1, 1, c)].view(-1, c)
-        loss = F.cross_entropy(predict, target, weight=weight, size_average=self.size_average)
-        return loss
+def loss_rescale(self, predict, target, weight=None):
+    """
+        Args:
+            predict:(n, c, h, w)
+            target:(n, h, w)
+            weight (Tensor, optional): a manual rescaling weight given to each class.
+                                       If given, has to be a Tensor of size "nclasses"
+    """
+    assert not target.requires_grad
+    assert predict.dim() == 4
+    assert target.dim() == 3
+    assert predict.size(0) == target.size(0), "{0} vs {1} ".format(predict.size(0), target.size(0))
+    assert predict.size(2) == target.size(1), "{0} vs {1} ".format(predict.size(2), target.size(1))
+    assert predict.size(3) == target.size(2), "{0} vs {1} ".format(predict.size(3), target.size(3))
+    n, c, h, w = predict.size()
+    target_mask = (target >= 0) * (target != self.ignore_label)
+    target = target[target_mask]
+    if not target.data.dim():
+        return Variable(torch.zeros(1))
+    predict = predict.transpose(1, 2).transpose(2, 3).contiguous()
+    predict = predict[target_mask.view(n, h, w, 1).repeat(1, 1, 1, c)].view(-1, c)
+    loss_final = F.cross_entropy(predict, target, weight=weight, size_average=self.size_average)
+    return loss_final
 
 class Net(nn.Module):
 
@@ -110,10 +104,9 @@ class Net(nn.Module):
         return x
 
 #function to calculate the loss - difference between the prediction and the ground truth labels
-def loss_calc(prediction, label):
+def loss_calc(prediction, target):
     label = Variable(label.long()).cuda()
-    criterion = CrossEntropy2d(ignore_index=IGNORE_LABEL).cuda()
-    return criterion(prediction, label)
+    return loss_rescale(prediction, target)
 
 #functions to get the learning rate - from DeepLab
 def lr_poly(base_lr, iter, max_iter, power):
@@ -184,6 +177,7 @@ for epoch in range(num_epochs):
         print(label.size())
 
         loss = loss_calc(output, label)
+
         loss.backward()
         optimizer.step()
 
