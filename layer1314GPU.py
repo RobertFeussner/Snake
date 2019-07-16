@@ -163,7 +163,6 @@ for epoch in range(num_epochs):
         loss = loss_calc(output, label)
         loss.backward()
         optimizer.step()
-        train_loss_history.append(loss.data.cpu().numpy())
 
         if i_iter % 1:
             print('[Epoch %d/%d]' % (epoch + 1, num_epochs))
