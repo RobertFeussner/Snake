@@ -49,6 +49,8 @@ for i in range(BATCHES):
     predictions = torch.nn.functional.interpolate(predictions, size=(SIZE,SIZE), mode="bilinear") #upsample back to 321 x 321
     predictions = predictions.cuda()
 
+    print(net(predictions))
+
     #labels = ground truth
     labels = torch.load(PATHb11 + str(i) + '.pth')
     labels = labels.float()
@@ -69,7 +71,7 @@ for i in range(BATCHES):
         label = labels[j].unsqueeze(0)
         all_labels.append(label)
 
-print(net(all_predictions))
+
 
 
 
