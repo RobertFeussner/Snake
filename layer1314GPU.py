@@ -9,7 +9,7 @@ Module = nn.Module
 from itertools import repeat
 from torch.autograd import Variable
 import argparse
-import numpy
+import numpy as np
 import argparse
 from torch.utils import data
 import pickle
