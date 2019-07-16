@@ -119,7 +119,7 @@ for i in range(BATCHES):
         all_images.append(image)
 
 #Stochastic Gradient Descent optimizer
-optimizer = optim.SGD(model.conv1.weight, lr=args.learning_rate, momentum=args.momentum,weight_decay=args.weight_decay)
+optimizer = optim.SGD([model.conv1.weight], lr=args.learning_rate, momentum=args.momentum,weight_decay=args.weight_decay)
 optimizer.zero_grad()
 
 #for i_iter in range(BATCHES):
