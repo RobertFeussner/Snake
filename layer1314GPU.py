@@ -105,7 +105,7 @@ class Net(nn.Module):
 
 #function to calculate the loss - difference between the prediction and the ground truth labels
 def loss_calc(prediction, target):
-    label = Variable(label.long()).cuda()
+    target = Variable(target.long()).cuda()
     return loss_rescale(prediction, target)
 
 #functions to get the learning rate - from DeepLab
