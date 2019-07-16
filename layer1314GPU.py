@@ -11,6 +11,7 @@ from torch.autograd import Variable
 import argparse
 
 unfold = F.unfold
+num_epochs = 3
 SIZE = 321
 DOWNSAMPLE_SIZE = 50
 PATHb12 = "/root/VOC12_After_b12/TrainBatch3TensorsGPU/predictions"
@@ -122,14 +123,31 @@ for i in range(BATCHES):
 optimizer = optim.SGD([model.conv1.weight], lr=args.learning_rate, momentum=args.momentum,weight_decay=args.weight_decay)
 optimizer.zero_grad()
 
-#for i_iter in range(BATCHES):
+#get
+train_loss_history = []
+train_acc_history = []
 
- #   optimizer.zero_grad()
- #   adjust_learning_rate(optimizer, i_iter)
- #   output = interp(model(all_predictions))
- #   loss = loss_calc(output, labels)
- #   loss.backward()
- #   optimizer.step()
+for epoch in range(num_epochs):
+    for i_iter in range(BATCHES):
+        optimizer.zero_grad()
+        adjust_learning_rate(optimizer, i_iter)
+        pred = Variable(all_predictions[i_iter]).cuda()
+        label = Variable(labels[i_ter])
+
+        output = interp(model(pred))
+        loss = loss_calc(output, label)
+        loss.backward()
+        optimizer.step()
+
+        self.train_loss_history.append(loss.data.cpu().numpy())
+
+        classif_targets = label >= 0
+        train_accuracy = np.mean((pred == label)[classif_targets].data.cpu().numpy())
+        self.train_acc_history.append(train_accuracy)
+
+        if i_iter % 2:
+            print('[Epoch %d/%d] TRAIN acc/loss: %.3f/%.3f' % (epoch + 1, num_epochs, train_accuracy, train_loss))
+
 
 
 
