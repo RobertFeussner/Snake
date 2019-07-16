@@ -69,10 +69,7 @@ for i in range(BATCHES):
         label = labels[j].unsqueeze(0)
         all_labels.append(label)
 
-
-print(all_predictions)
-print("pauza")
-print(all_labels)
+print(net(all_predictions))
 
 
 
