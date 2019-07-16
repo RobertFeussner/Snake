@@ -149,6 +149,10 @@ for epoch in range(num_epochs):
         label = Variable(labels[i_iter])
 
         output = interp(model(pred))
+
+        print(output.size())
+        print(label.size())
+        
         loss = loss_calc(output, label)
         loss.backward()
         optimizer.step()
