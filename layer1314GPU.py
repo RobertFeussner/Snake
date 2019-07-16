@@ -8,6 +8,7 @@ import torch.optim as optim
 Module = nn.Module
 from itertools import repeat
 from torch.autograd import Variable
+import argparse
 
 unfold = F.unfold
 SIZE = 321
@@ -23,10 +24,22 @@ NUM_STEPS = 10000
 POWER = 0.9
 WEIGHT_DECAY = 0.0005
 
-args.learning_rate = LEARNING_RATE
-args.momentum = MOMENTUM
-args.power	= POWER
-args.weight_decay = WEIGHT_DECAY
+#arguments function - from DeepLab
+def get_arguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--learning-rate", type=float, default=LEARNING_RATE,
+                        help="Base learning rate for training with polynomial decay.")
+    parser.add_argument("--momentum", type=float, default=MOMENTUM,
+                        help="Momentum component of the optimiser.")
+    parser.add_argument("--num-steps", type=int, default=NUM_STEPS,
+                        help="Number of training steps.")
+    parser.add_argument("--power", type=float, default=POWER,
+                        help="Decay parameter to compute the learning rate.")
+    parser.add_argument("--weight-decay", type=float, default=WEIGHT_DECAY,
+                        help="Regularisation parameter for L2-loss.")
+    return parser.parse_args()
+
+args = get_arguments()
 
 os.environ["CUDA_VISIBLE_DEVICES"]=str(0)
 cudnn.enabled = True
