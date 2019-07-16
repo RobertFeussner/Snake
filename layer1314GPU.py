@@ -175,11 +175,11 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()
 
-        self.train_loss_history.append(loss.data.cpu().numpy())
+        train_loss_history.append(loss.data.cpu().numpy())
 
         classif_targets = label >= 0
         train_accuracy = np.mean((pred == label)[classif_targets].data.cpu().numpy())
-        self.train_acc_history.append(train_accuracy)
+        train_acc_history.append(train_accuracy)
 
         if i_iter % 1:
             print('[Epoch %d/%d] TRAIN acc/loss: %.3f/%.3f' % (epoch + 1, num_epochs, train_accuracy, train_loss))
