@@ -36,6 +36,7 @@ NUM_STEPS = 10000
 POWER = 0.9
 WEIGHT_DECAY = 0.0005
 IGNORE_LABEL = 255
+INPUT_SIZE = '321,321'
 
 #arguments function - from DeepLab
 def get_arguments():
@@ -139,6 +140,8 @@ optimizer.zero_grad()
 train_loss_history = []
 train_acc_history = []
 
+interp = nn.Upsample(size=INPUT_SIZE, mode='bilinear', align_corners=True)
+
 for epoch in range(num_epochs):
     for i_iter in range(BATCHES):
         optimizer.zero_grad()
@@ -146,7 +149,7 @@ for epoch in range(num_epochs):
         pred = Variable(all_predictions[i_iter]).cuda()
         label = Variable(labels[i_iter])
 
-        output = model(pred)
+        output = interp(model(pred))
         loss = loss_calc(output, label)
         loss.backward()
         optimizer.step()
