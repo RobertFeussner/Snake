@@ -67,12 +67,6 @@ def loss_rescale(predict, target):
             weight (Tensor, optional): a manual rescaling weight given to each class.
                                        If given, has to be a Tensor of size "nclasses"
     """
-    assert not target.requires_grad
-    assert predict.dim() == 4
-    assert target.dim() == 3
-    assert predict.size(0) == target.size(0), "{0} vs {1} ".format(predict.size(0), target.size(0))
-    assert predict.size(2) == target.size(1), "{0} vs {1} ".format(predict.size(2), target.size(1))
-    assert predict.size(3) == target.size(2), "{0} vs {1} ".format(predict.size(3), target.size(3))
     n, c, h, w = predict.size()
     target_mask = (target >= 0) * (target != self.ignore_label)
     target = target[target_mask]
@@ -80,7 +74,7 @@ def loss_rescale(predict, target):
         return Variable(torch.zeros(1))
     predict = predict.transpose(1, 2).transpose(2, 3).contiguous()
     predict = predict[target_mask.view(n, h, w, 1).repeat(1, 1, 1, c)].view(-1, c)
-    loss_final = F.cross_entropy(predict, target, weight=weight, size_average=self.size_average)
+    loss_final = F.cross_entropy(predict, target, size_average=SIZE)
     return loss_final
 
 class Net(nn.Module):
