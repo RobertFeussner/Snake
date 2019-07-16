@@ -59,7 +59,7 @@ cudnn.enabled = True
 cudnn.benchmark = True
 
 
-def loss_rescale(self, predict, target, weight=None):
+def loss_rescale(predict, target):
     """
         Args:
             predict:(n, c, h, w)
