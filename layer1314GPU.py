@@ -35,6 +35,7 @@ MOMENTUM = 0.9
 NUM_STEPS = 10000
 POWER = 0.9
 WEIGHT_DECAY = 0.0005
+IGNORE_LABEL = 255
 
 #arguments function - from DeepLab
 def get_arguments():
