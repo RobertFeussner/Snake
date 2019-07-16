@@ -22,7 +22,7 @@ import random
 import timeit
 
 unfold = F.unfold
-num_epochs = 3
+num_epochs = 10 #try also 40
 SIZE = 321
 DOWNSAMPLE_SIZE = 50
 PATHb12 = "/root/VOC12_After_b12/TrainBatch3TensorsGPU/predictions"
@@ -164,7 +164,7 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()
 
-        if i_iter % 1:
+        if i_iter % 100:
             print('[Epoch %d/%d]' % (epoch + 1, num_epochs))
 
 
