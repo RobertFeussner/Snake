@@ -132,7 +132,7 @@ for epoch in range(num_epochs):
         optimizer.zero_grad()
         adjust_learning_rate(optimizer, i_iter)
         pred = Variable(all_predictions[i_iter]).cuda()
-        label = Variable(labels[i_ter])
+        label = Variable(labels[i_iter])
 
         output = interp(model(pred))
         loss = loss_calc(output, label)
@@ -145,7 +145,7 @@ for epoch in range(num_epochs):
         train_accuracy = np.mean((pred == label)[classif_targets].data.cpu().numpy())
         self.train_acc_history.append(train_accuracy)
 
-        if i_iter % 2:
+        if i_iter % 1:
             print('[Epoch %d/%d] TRAIN acc/loss: %.3f/%.3f' % (epoch + 1, num_epochs, train_accuracy, train_loss))
 
 
