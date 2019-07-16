@@ -34,7 +34,8 @@ class Net(nn.Module):
 
     def forward(self, x):
         x = self.conv1(x)
-        x = F.linear(x, torch.tensor([[1.0]]))
+        A = torch.tensor([[1.0]]).cuda()
+        x = F.linear(x,A)
         x = - self.min_pool(-x)
         return x
 
@@ -42,22 +43,36 @@ class Net(nn.Module):
 net = Net()
 net.to("cuda:0")
 
-#labels --- from Robert's part ---> ground truth
 for i in range(BATCHES):
     predictions = torch.load(PATHb12 + str(i)+ '.pth') # b12 3 predictions
     predictions = predictions.float()
-    #predictions = torch.nn.functional.interpolate(predictions, size=(SIZE,SIZE), mode="bilinear") #upsample them back
+    predictions = torch.nn.functional.interpolate(predictions, size=(SIZE,SIZE), mode="bilinear") #upsample back to 321 x 321
     predictions = predictions.cuda()
 
     #labels = ground truth
-    labels = torch.load(PATHb11 + str(i) + '.pth')  #ground truth labels
+    labels = torch.load(PATHb11 + str(i) + '.pth')
     labels = labels.float()
     labels = labels.cuda()
 
+    images = torch.load(PATHb11 + str(i) + '.pth')
+    images = labels.float()
+    images = labels.cuda()
+
+    all_predictions = []
+    all_labels = []
+
 
     for j in range(3):
-        prediction = predictions[j]
-        #print(prediction)
+        prediction = predictions[j].unsqueeze(0)
+        all_predictions.append(prediction)
+
+        label = labels[j].unsqueeze(0)
+        all_labels.append(label)
+
+
+print(all_predictions)
+print("pauza")
+print(all_labels)
 
 
 
