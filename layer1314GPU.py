@@ -59,7 +59,7 @@ cudnn.enabled = True
 cudnn.benchmark = True
 
 
-def loss_rescale(predict, target):
+def loss_rescale(predict, target, ignore_label):
     """
         Args:
             predict:(n, c, h, w)
@@ -68,7 +68,7 @@ def loss_rescale(predict, target):
                                        If given, has to be a Tensor of size "nclasses"
     """
     n, c, h, w = predict.size()
-    target_mask = (target >= 0) * (target != self.ignore_label)
+    target_mask = (target >= 0) * (target != ignore_label)
     target = target[target_mask]
     if not target.data.dim():
         return Variable(torch.zeros(1))
@@ -100,7 +100,7 @@ class Net(nn.Module):
 #function to calculate the loss - difference between the prediction and the ground truth labels
 def loss_calc(prediction, target):
     target = Variable(target.long()).cuda()
-    return loss_rescale(prediction, target)
+    return loss_rescale(prediction, target, IGNORE_LABEL)
 
 #functions to get the learning rate - from DeepLab
 def lr_poly(base_lr, iter, max_iter, power):
