@@ -58,25 +58,6 @@ os.environ["CUDA_VISIBLE_DEVICES"]=str(0)
 cudnn.enabled = True
 cudnn.benchmark = True
 
-
-def loss_rescale(predict, target, ignore_label):
-    """
-        Args:
-            predict:(n, c, h, w)
-            target:(n, h, w)
-            weight (Tensor, optional): a manual rescaling weight given to each class.
-                                       If given, has to be a Tensor of size "nclasses"
-    """
-    n, c, h, w = predict.size()
-    target_mask = (target >= 0) * (target != ignore_label)
-    target = target[target_mask]
-    if not target.data.dim():
-        return Variable(torch.zeros(1))
-    predict = predict.transpose(1, 2).transpose(2, 3).contiguous()
-    predict = predict[target_mask.view(n, h, w, 1).repeat(1, 1, 1, c)].view(-1, c)
-    loss_final = F.cross_entropy(predict, target, size_average=SIZE)
-    return loss_final
-
 class Net(nn.Module):
 
     def __init__(self):
@@ -97,6 +78,25 @@ class Net(nn.Module):
         x = - self.min_pool(-x)
         return x
 
+#loss function with rescalling of target, prediction
+def loss_rescale(predict, target, ignore_label):
+    """
+        Args:
+            predict:(n, c, h, w)
+            target:(n, h, w)
+            weight (Tensor, optional): a manual rescaling weight given to each class.
+                                       If given, has to be a Tensor of size "nclasses"
+    """
+    n, c, h, w = predict.size()
+    target_mask = (target >= 0) * (target != ignore_label)
+    target = target[target_mask]
+    if not target.data.dim():
+        return Variable(torch.zeros(1))
+    predict = predict.transpose(1, 2).transpose(2, 3).contiguous()
+    predict = predict[target_mask.view(n, h, w, 1).repeat(1, 1, 1, c)].view(-1, c)
+    loss_final = F.cross_entropy(predict, target, size_average=SIZE)
+    return loss_final
+
 #function to calculate the loss - difference between the prediction and the ground truth labels
 def loss_calc(prediction, target):
     target = Variable(target.long()).cuda()
@@ -109,7 +109,6 @@ def lr_poly(base_lr, iter, max_iter, power):
 def adjust_learning_rate(optimizer, i_iter):
     lr = lr_poly(args.learning_rate, i_iter, args.num_steps, args.power)
     optimizer.param_groups[0]['lr'] = lr
-    #optimizer.param_groups[1]['lr'] = lr * 10
 
 
 model = Net()
@@ -152,10 +151,6 @@ for i in range(BATCHES):
 optimizer = optim.SGD([model.conv1.weight], lr=args.learning_rate, momentum=args.momentum,weight_decay=args.weight_decay)
 optimizer.zero_grad()
 
-#get
-train_loss_history = []
-train_acc_history = []
-
 interp = nn.Upsample(size=(SIZE,SIZE), mode='bilinear', align_corners=True)
 
 for epoch in range(num_epochs):
@@ -164,25 +159,14 @@ for epoch in range(num_epochs):
         adjust_learning_rate(optimizer, i_iter)
         pred = Variable(all_predictions[i_iter]).cuda()
         label = Variable(labels[i_iter])
-
         output = interp(model(pred))
-
-        print(output.size())
-        print(label.size())
-
         loss = loss_calc(output, label)
-
         loss.backward()
         optimizer.step()
-
         train_loss_history.append(loss.data.cpu().numpy())
 
-        classif_targets = label >= 0
-        train_accuracy = np.mean((pred == label)[classif_targets].data.cpu().numpy())
-        train_acc_history.append(train_accuracy)
-
         if i_iter % 1:
-            print('[Epoch %d/%d] TRAIN acc/loss: %.3f/%.3f' % (epoch + 1, num_epochs, train_accuracy, train_loss))
+            print('[Epoch %d/%d]' % (epoch + 1, num_epochs))
 
 
 
