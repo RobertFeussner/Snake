@@ -144,8 +144,8 @@ optimizer.zero_grad()
 
 interp = nn.Upsample(size=(SIZE,SIZE), mode='bilinear', align_corners=True)
 
-print(all_predictions.size())
-print(all_labels.size())
+print(len(all_predictions.size))
+print(len(all_labels.size))
 
 print
 #train & save intermediate models
