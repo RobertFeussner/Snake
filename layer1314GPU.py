@@ -115,6 +115,9 @@ model.to("cuda:0")
 model.train()
 model.cuda()
 
+all_predictions = []
+all_labels = []
+
 for i in range(BATCHES):
     #load results from b12
     predictions = torch.load(PATHb12 + str(i)+ '.pth') # b12 3 predictions
@@ -126,9 +129,6 @@ for i in range(BATCHES):
     labels = torch.load(PATHb11 + str(i) + '.pth')
     labels = labels.float()
     labels = labels.cuda()
-
-    all_predictions = []
-    all_labels = []
 
 
     for j in range(3):
