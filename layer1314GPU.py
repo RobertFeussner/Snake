@@ -29,7 +29,7 @@ PATHb11 = "/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/labels"
 BATCHES = 3525
 
 
-LEARNING_RATE = 1.6e-4 #2.5e-4
+LEARNING_RATE = 2.0e-4 #2.5e-4
 MOMENTUM = 0.9
 POWER = 0.9
 WEIGHT_DECAY = 0.0005
@@ -139,7 +139,7 @@ for i_iter in range(BATCHES * 3):
     optimizer.step()
 
     if (i_iter + 1) % BATCHES == 0:
-        print('[Epoch %d, iteration %d, loss = %f]:' % (j, i_iter, loss))
+        print('[Epoch %d, iteration %d, loss = %f]' % (i_iter, loss))
         # save model after a few steps
         torch.save(model.state_dict(), "/root/VOC12_After_b14/TrainBatch3TensorsGPU/model" + str(i_iter) + ".pth")
 
@@ -147,9 +147,6 @@ for i_iter in range(BATCHES * 3):
 for i_iter in range(BATCHES * 3):
     pred = Variable(interp(all_predictions[i_iter])).cuda()
     output = interp(model(pred))
-
-    if (i_iter + 1) % BATCHES == 0:
-        print(output)
     torch.save(pred, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/predictions" + str(i_iter) + ".pth")
 
 
