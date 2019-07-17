@@ -136,10 +136,10 @@ for i_iter in range(BATCHES * 3):
     optimizer.zero_grad()
     pred = Variable(all_predictions[i_iter]).cuda()
 
-    print(pred.size())
-    
     label = Variable(all_labels[i_iter])
     output = interp(model(pred))
+
+    print(output.size())
     loss = loss_calc(output, label)
     loss.backward()
     optimizer.step()
