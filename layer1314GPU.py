@@ -112,7 +112,7 @@ for i in range(BATCHES):
 
     for j in range(3):
         prediction = predictions[j].unsqueeze(0)
-        prediction = torch.nn.functional.interpolate(predictions, size=(SIZE, SIZE), mode="bilinear")
+        prediction = torch.nn.functional.interpolate(prediction, size=(SIZE, SIZE), mode="bilinear")
         all_predictions.append(prediction)
 
         label = labels[j].unsqueeze(0)
