@@ -22,7 +22,6 @@ import random
 import timeit
 
 unfold = F.unfold
-num_epochs = 10 #try also 40
 SIZE = 321
 DOWNSAMPLE_SIZE = 50
 PATHb12 = "/root/VOC12_After_b12/TrainBatch3TensorsGPU/predictions"
@@ -156,10 +155,10 @@ for i_iter in range(BATCHES):
     loss.backward()
     optimizer.step()
 
-    if i_iter % 150:
+    if i_iter % 500:
         print('[Iteration %d, loss = %f]:' % (i_iter, loss))
         # save model after a few steps
-        torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/model" + str(i_iter) + ".pth")
+        torch.save(model.state_dict(), "/root/VOC12_After_b14/TrainBatch3TensorsGPU/model" + str(i_iter) + ".pth")
 
 #save the output for the trained model
 for i_iter in range(BATCHES):
