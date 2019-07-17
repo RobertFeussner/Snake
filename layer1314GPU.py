@@ -116,13 +116,13 @@ for i in range(BATCHES):
     #load results from b12
     predictions = torch.load(PATHb12 + str(i)+ '.pth') # b12 3 predictions
     predictions = predictions.float()
-    #predictions = torch.nn.functional.interpolate(predictions, size=(SIZE,SIZE), mode="bilinear") #upsample back to 321 x 321
-    predictions = predictions.cuda()
+    predictions = torch.nn.functional.interpolate(predictions, size=(SIZE,SIZE), mode="bilinear") #upsample back to 321 x 321
+    #predictions = predictions.cuda()
 
     #load labels = ground truth
     labels = torch.load(PATHb11 + str(i) + '.pth')
     labels = labels.float()
-    labels = labels.cuda()
+    #labels = labels.cuda()
 
 
     for j in range(3):
