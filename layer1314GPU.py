@@ -27,11 +27,11 @@ DOWNSAMPLE_SIZE = 50
 PATHb12 = "/root/VOC12_After_b12/TrainBatch3TensorsGPU/predictions"
 PATHb11 = "/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/labels"
 BATCHES = 3525
+num_epochs = 5
 
 
-LEARNING_RATE = 1.8e-4 #2.5e-4
+LEARNING_RATE = 1.9e-4
 MOMENTUM = 0.9
-NUM_STEPS = 3525
 POWER = 0.9
 WEIGHT_DECAY = 0.0005
 IGNORE_LABEL = 255
@@ -43,8 +43,6 @@ def get_arguments():
                         help="Base learning rate for training with polynomial decay.")
     parser.add_argument("--momentum", type=float, default=MOMENTUM,
                         help="Momentum component of the optimiser.")
-    parser.add_argument("--num-steps", type=int, default=NUM_STEPS,
-                        help="Number of training steps.")
     parser.add_argument("--power", type=float, default=POWER,
                         help="Decay parameter to compute the learning rate.")
     parser.add_argument("--weight-decay", type=float, default=WEIGHT_DECAY,
@@ -134,20 +132,21 @@ optimizer.zero_grad()
 
 
 #train & save intermediate models
-for i_iter in range(BATCHES * 3):
-    optimizer.zero_grad()
-    pred = Variable(all_predictions[i_iter]).cuda()
+for j in range(num_epochs):
+    for i_iter in range(BATCHES * 3):
+        optimizer.zero_grad()
+        pred = Variable(all_predictions[i_iter]).cuda()
 
-    label = Variable(all_labels[i_iter])
-    output = interp(model(pred))
-    loss = loss_calc(output, label)
-    loss.backward()
-    optimizer.step()
+        label = Variable(all_labels[i_iter])
+        output = interp(model(pred))
+        loss = loss_calc(output, label)
+        loss.backward()
+        optimizer.step()
 
-    if (i_iter + 1) % BATCHES == 0:
-        print('[Iteration %d, loss = %f]:' % (i_iter, loss))
-        # save model after a few steps
-        torch.save(model.state_dict(), "/root/VOC12_After_b14/TrainBatch3TensorsGPU/model" + str(i_iter) + ".pth")
+        if (i_iter + 1) % BATCHES == 0:
+            print('[Iteration %d, loss = %f]:' % (i_iter, loss))
+            # save model after a few steps
+            torch.save(model.state_dict(), "/root/VOC12_After_b14/TrainBatch3TensorsGPU/model" + str(i_iter) + ".pth")
 
 #save the output for the trained model
 for i_iter in range(BATCHES * 3):
