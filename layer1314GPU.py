@@ -27,7 +27,7 @@ DOWNSAMPLE_SIZE = 50
 PATHb12 = "/root/VOC12_After_b12/TrainBatch3TensorsGPU/predictions"
 PATHb11 = "/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/labels"
 BATCHES = 3525
-num_epochs = 10
+num_epochs = 5
 
 
 LEARNING_RATE = 1.9e-4 #2.5e-4
@@ -113,8 +113,8 @@ for i in range(BATCHES):
 
     for j in range(3):
         prediction = predictions[j].unsqueeze(0)
-        #prediction = interp(prediction)
-        all_predictions.append(prediction)
+        prediction = interp(prediction)
+        #all_predictions.append(prediction)
 
         label = labels[j].unsqueeze(0)
         all_labels.append(label)
@@ -132,7 +132,7 @@ optimizer.zero_grad()
 
 
 #train & save intermediate models
-for j in range(num_epochs):
+'''for j in range(num_epochs):
     for i_iter in range(BATCHES * 3):
         optimizer.zero_grad()
         pred = Variable(all_predictions[i_iter]).cuda()
@@ -153,6 +153,7 @@ for i_iter in range(BATCHES * 3):
     pred = Variable(all_predictions[i_iter]).cuda()
     output = interp(model(pred))
     torch.save(pred, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/predictions" + str(i_iter) + ".pth")
+'''
 
 
 
