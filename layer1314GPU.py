@@ -112,7 +112,7 @@ for i in range(BATCHES):
 
     for j in range(3):
         prediction = predictions[j].unsqueeze(0)
-        prediction = torch.nn.functional.interpolate(prediction, size=(SIZE, SIZE), mode="bilinear")
+        #prediction = torch.nn.functional.interpolate(prediction, size=(SIZE, SIZE), mode="bilinear")
         all_predictions.append(prediction)
 
         label = labels[j].unsqueeze(0)
@@ -131,11 +131,13 @@ optimizer.zero_grad()
 
 interp = nn.Upsample(size=(SIZE,SIZE), mode='bilinear', align_corners=True)
 
-print
 #train & save intermediate models
 for i_iter in range(BATCHES * 3):
     optimizer.zero_grad()
     pred = Variable(all_predictions[i_iter]).cuda()
+
+    print(pred.size())
+    
     label = Variable(all_labels[i_iter])
     output = interp(model(pred))
     loss = loss_calc(output, label)
