@@ -109,12 +109,6 @@ def adjust_learning_rate(optimizer, i_iter):
     lr = lr_poly(args.learning_rate, i_iter, args.num_steps, args.power)
     optimizer.param_groups[0]['lr'] = lr
 
-
-model = Net()
-model.to("cuda:0")
-model.train()
-model.cuda()
-
 all_predictions = []
 all_labels = []
 
@@ -137,6 +131,13 @@ for i in range(BATCHES):
 
         label = labels[j].unsqueeze(0)
         all_labels.append(label)
+
+
+model = Net()
+model.to("cuda:0")
+model.train()
+model.cuda()
+
 
 #Stochastic Gradient Descent optimizer
 optimizer = optim.SGD([model.conv1.weight], lr=args.learning_rate, momentum=args.momentum,weight_decay=args.weight_decay)
