@@ -79,13 +79,6 @@ class Net(nn.Module):
 
 #loss function with rescalling of target, prediction
 def loss_rescale(predict, target, ignore_label):
-    """
-        Args:
-            predict:(n, c, h, w)
-            target:(n, h, w)
-            weight (Tensor, optional): a manual rescaling weight given to each class.
-                                       If given, has to be a Tensor of size "nclasses"
-    """
     n, c, h, w = predict.size()
     target_mask = (target >= 0) * (target != ignore_label)
     target = target[target_mask]
@@ -100,14 +93,6 @@ def loss_rescale(predict, target, ignore_label):
 def loss_calc(prediction, target):
     target = Variable(target.long()).cuda()
     return loss_rescale(prediction, target, IGNORE_LABEL)
-
-#functions to get the learning rate - from DeepLab
-def lr_poly(base_lr, iter, max_iter, power):
-    return base_lr*((1-float(iter)/max_iter)**(power))
-
-def adjust_learning_rate(optimizer, i_iter):
-    lr = lr_poly(args.learning_rate, i_iter, args.num_steps, args.power)
-    optimizer.param_groups[0]['lr'] = lr
 
 all_predictions = []
 all_labels = []
@@ -127,6 +112,7 @@ for i in range(BATCHES):
 
     for j in range(3):
         prediction = predictions[j].unsqueeze(0)
+        prediction = torch.nn.functional.interpolate(predictions, size=(SIZE, SIZE), mode="bilinear")
         all_predictions.append(prediction)
 
         label = labels[j].unsqueeze(0)
@@ -152,7 +138,6 @@ print
 #train & save intermediate models
 for i_iter in range(BATCHES * 3):
     optimizer.zero_grad()
-    #adjust_learning_rate(optimizer, i_iter)
     pred = Variable(all_predictions[i_iter]).cuda()
     label = Variable(all_labels[i_iter])
     output = interp(model(pred))
@@ -160,7 +145,7 @@ for i_iter in range(BATCHES * 3):
     loss.backward()
     optimizer.step()
 
-    if (i_iter == BATCHES):
+    if i_iter % BATCHES == 0:
         print('[Iteration %d, loss = %f]:' % (i_iter, loss))
         # save model after a few steps
         torch.save(model.state_dict(), "/root/VOC12_After_b14/TrainBatch3TensorsGPU/model" + str(i_iter) + ".pth")
