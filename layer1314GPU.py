@@ -155,7 +155,7 @@ for i_iter in range(BATCHES):
     loss.backward()
     optimizer.step()
 
-    if i_iter % 500:
+    if i_iter % 500 == 0:
         print('[Iteration %d, loss = %f]:' % (i_iter, loss))
         # save model after a few steps
         torch.save(model.state_dict(), "/root/VOC12_After_b14/TrainBatch3TensorsGPU/model" + str(i_iter) + ".pth")
