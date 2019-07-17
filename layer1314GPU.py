@@ -1,10 +1,10 @@
 import torch
 import torch.nn as nn
-import os
-import collections
 import torch.nn.functional as F
 import torch.backends.cudnn as cudnn
 import torch.optim as optim
+import os
+import collections
 Module = nn.Module
 from itertools import repeat
 from torch.autograd import Variable
@@ -165,7 +165,7 @@ for i_iter in range(BATCHES):
 for i_iter in range(BATCHES):
     pred = Variable(all_predictions[i_iter]).cuda()
     output = interp(model(pred))
-    torch.save(pred, '/root/VOC12_After_b14/TrainBatch3TensorsGPU/predictions' + str(i_iter) + '.pth')
+    torch.save(pred, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/predictions" + str(i_iter) + ".pth")
 
 
 
