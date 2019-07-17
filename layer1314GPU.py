@@ -131,9 +131,6 @@ optimizer.zero_grad()
 
 interp = nn.Upsample(size=(SIZE,SIZE), mode='bilinear', align_corners=True)
 
-print(len(all_predictions))
-print(len(all_labels))
-
 print
 #train & save intermediate models
 for i_iter in range(BATCHES * 3):
