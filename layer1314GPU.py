@@ -29,7 +29,7 @@ PATHb11 = "/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/labels"
 BATCHES = 3525
 
 
-LEARNING_RATE = 2.0e-4 #2.5e-4
+LEARNING_RATE = 1.8e-4 #2.5e-4
 MOMENTUM = 0.9
 POWER = 0.9
 WEIGHT_DECAY = 0.0005
@@ -143,6 +143,7 @@ for i_iter in range(BATCHES * 3):
         # save model after a few steps
         torch.save(model.state_dict(), "/root/VOC12_After_b14/TrainBatch3TensorsGPU/model" + str(i_iter) + ".pth")
 
+print("evaluate output")
 #save the output for the trained model
 for i_iter in range(BATCHES * 3):
     pred = Variable(interp(all_predictions[i_iter])).cuda()
