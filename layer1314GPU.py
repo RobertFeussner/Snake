@@ -152,7 +152,7 @@ print
 #train & save intermediate models
 for i_iter in range(BATCHES * 3):
     optimizer.zero_grad()
-    adjust_learning_rate(optimizer, i_iter)
+    #adjust_learning_rate(optimizer, i_iter)
     pred = Variable(all_predictions[i_iter]).cuda()
     label = Variable(all_labels[i_iter])
     output = interp(model(pred))
