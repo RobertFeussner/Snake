@@ -102,7 +102,6 @@ for i in range(BATCHES):
     #load results from b12
     predictions = torch.load(PATHb12 + str(i)+ '.pth') # b12 3 predictions
     predictions = predictions.float()
-    #predictions = torch.nn.functional.interpolate(predictions, size=(100,100), mode="bilinear") #upsample back to 321 x 321
     #predictions = predictions.cuda()
 
     #load labels = ground truth
@@ -113,7 +112,6 @@ for i in range(BATCHES):
 
     for j in range(3):
         prediction = predictions[j].unsqueeze(0)
-        prediction = interp(prediction)
         all_predictions.append(prediction)
 
         label = labels[j].unsqueeze(0)
@@ -132,11 +130,10 @@ optimizer.zero_grad()
 
 
 #train & save intermediate models
-'''for j in range(num_epochs):
+for j in range(num_epochs):
     for i_iter in range(BATCHES * 3):
         optimizer.zero_grad()
-        pred = Variable(all_predictions[i_iter]).cuda()
-
+        pred = Variable(interp(all_predictions[i_iter])).cuda()
         label = Variable(all_labels[i_iter])
         output = interp(model(pred))
         loss = loss_calc(output, label)
@@ -150,10 +147,9 @@ optimizer.zero_grad()
 
 #save the output for the trained model
 for i_iter in range(BATCHES * 3):
-    pred = Variable(all_predictions[i_iter]).cuda()
+    pred = Variable(interp(all_predictions[i_iter])).cuda()
     output = interp(model(pred))
     torch.save(pred, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/predictions" + str(i_iter) + ".pth")
-'''
 
 
 
