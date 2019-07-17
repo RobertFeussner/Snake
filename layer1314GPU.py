@@ -26,7 +26,7 @@ SIZE = 321
 DOWNSAMPLE_SIZE = 50
 PATHb12 = "/root/VOC12_After_b12/TrainBatch3TensorsGPU/predictions"
 PATHb11 = "/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/labels"
-BATCHES = 1 #should be changed to 3525 when I train
+BATCHES = 3525
 
 
 LEARNING_RATE = 2.5e-4
