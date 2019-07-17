@@ -115,10 +115,7 @@ for i in range(BATCHES):
 
     for j in range(3):
         prediction = predictions[j].unsqueeze(0)
-        prediction = interp(prediction)
-
-        print(prediction.size())
-        
+        #prediction = interp(prediction)
         all_predictions.append(prediction)
 
         label = labels[j].unsqueeze(0)
