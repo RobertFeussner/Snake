@@ -144,24 +144,28 @@ optimizer.zero_grad()
 
 interp = nn.Upsample(size=(SIZE,SIZE), mode='bilinear', align_corners=True)
 
+print(all_predictions.size())
+print(all_labels.size())
+
+print
 #train & save intermediate models
-for i_iter in range(BATCHES):
+for i_iter in range(BATCHES * 3):
     optimizer.zero_grad()
     adjust_learning_rate(optimizer, i_iter)
     pred = Variable(all_predictions[i_iter]).cuda()
-    label = Variable(labels[i_iter])
+    label = Variable(all_labels[i_iter])
     output = interp(model(pred))
     loss = loss_calc(output, label)
     loss.backward()
     optimizer.step()
 
-    if i_iter % 500 == 0:
+    if (i_iter == BATCHES):
         print('[Iteration %d, loss = %f]:' % (i_iter, loss))
         # save model after a few steps
         torch.save(model.state_dict(), "/root/VOC12_After_b14/TrainBatch3TensorsGPU/model" + str(i_iter) + ".pth")
 
 #save the output for the trained model
-for i_iter in range(BATCHES):
+for i_iter in range(BATCHES * 3):
     pred = Variable(all_predictions[i_iter]).cuda()
     output = interp(model(pred))
     torch.save(pred, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/predictions" + str(i_iter) + ".pth")
