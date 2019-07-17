@@ -94,8 +94,11 @@ def loss_calc(prediction, target):
     target = Variable(target.long()).cuda()
     return loss_rescale(prediction, target, IGNORE_LABEL)
 
+interp = nn.Upsample(size=(SIZE,SIZE), mode='bilinear', align_corners=True)
+
 all_predictions = []
 all_labels = []
+
 
 for i in range(BATCHES):
     #load results from b12
@@ -112,7 +115,10 @@ for i in range(BATCHES):
 
     for j in range(3):
         prediction = predictions[j].unsqueeze(0)
-        #prediction = torch.nn.functional.interpolate(prediction, size=(SIZE, SIZE), mode="bilinear")
+        prediction = interp(prediction)
+
+        print(prediction.size())
+        
         all_predictions.append(prediction)
 
         label = labels[j].unsqueeze(0)
@@ -129,7 +135,6 @@ model.cuda()
 optimizer = optim.SGD([model.conv1.weight], lr=args.learning_rate, momentum=args.momentum,weight_decay=args.weight_decay)
 optimizer.zero_grad()
 
-interp = nn.Upsample(size=(SIZE,SIZE), mode='bilinear', align_corners=True)
 
 #train & save intermediate models
 for i_iter in range(BATCHES * 3):
@@ -138,8 +143,6 @@ for i_iter in range(BATCHES * 3):
 
     label = Variable(all_labels[i_iter])
     output = interp(model(pred))
-
-    print(output.size())
     loss = loss_calc(output, label)
     loss.backward()
     optimizer.step()
