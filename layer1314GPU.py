@@ -32,7 +32,7 @@ BATCHES = 1 #should be changed to 3525 when I train
 
 LEARNING_RATE = 2.5e-4
 MOMENTUM = 0.9
-NUM_STEPS = 10000
+NUM_STEPS = 3525
 POWER = 0.9
 WEIGHT_DECAY = 0.0005
 IGNORE_LABEL = 255
@@ -128,13 +128,8 @@ for i in range(BATCHES):
     labels = labels.float()
     labels = labels.cuda()
 
-    images = torch.load(PATHb11 + str(i) + '.pth')
-    images = labels.float()
-    images = labels.cuda()
-
     all_predictions = []
     all_labels = []
-    all_images = []
 
 
     for j in range(3):
@@ -144,28 +139,36 @@ for i in range(BATCHES):
         label = labels[j].unsqueeze(0)
         all_labels.append(label)
 
-        image = images[j]
-        all_images.append(image)
-
 #Stochastic Gradient Descent optimizer
 optimizer = optim.SGD([model.conv1.weight], lr=args.learning_rate, momentum=args.momentum,weight_decay=args.weight_decay)
 optimizer.zero_grad()
 
 interp = nn.Upsample(size=(SIZE,SIZE), mode='bilinear', align_corners=True)
 
-for epoch in range(num_epochs):
-    for i_iter in range(BATCHES):
-        optimizer.zero_grad()
-        adjust_learning_rate(optimizer, i_iter)
-        pred = Variable(all_predictions[i_iter]).cuda()
-        label = Variable(labels[i_iter])
-        output = interp(model(pred))
-        loss = loss_calc(output, label)
-        loss.backward()
-        optimizer.step()
+#train & save intermediate models
+for i_iter in range(BATCHES):
+    optimizer.zero_grad()
+    adjust_learning_rate(optimizer, i_iter)
+    pred = Variable(all_predictions[i_iter]).cuda()
+    label = Variable(labels[i_iter])
+    output = interp(model(pred))
+    loss = loss_calc(output, label)
+    loss.backward()
+    optimizer.step()
 
-        if i_iter % 100:
-            print('[Epoch %d/%d]' % (epoch + 1, num_epochs))
+    if i_iter % 150:
+        print('[Iteration %d, loss = %f]:' % (i_iter, loss))
+        # save model after a few steps
+        torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/model" + str(i_iter) + ".pth")
+
+#save the output for the trained model
+for i_iter in range(BATCHES):
+    pred = Variable(all_predictions[i_iter]).cuda()
+    output = interp(model(pred))
+    torch.save(pred, '/root/VOC12_After_b14/TrainBatch3TensorsGPU/predictions' + str(i_iter) + '.pth')
+
+
+
 
 
 
