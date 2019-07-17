@@ -29,7 +29,7 @@ PATHb11 = "/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/labels"
 BATCHES = 3525
 
 
-LEARNING_RATE = 2.5e-4
+LEARNING_RATE = 1.8e-4 #2.5e-4
 MOMENTUM = 0.9
 NUM_STEPS = 3525
 POWER = 0.9
@@ -144,7 +144,7 @@ for i_iter in range(BATCHES * 3):
     loss.backward()
     optimizer.step()
 
-    if i_iter % BATCHES == 0:
+    if (i_iter + 1) % BATCHES == 0:
         print('[Iteration %d, loss = %f]:' % (i_iter, loss))
         # save model after a few steps
         torch.save(model.state_dict(), "/root/VOC12_After_b14/TrainBatch3TensorsGPU/model" + str(i_iter) + ".pth")
