@@ -150,6 +150,7 @@ output = []
 for i_iter in range(BATCHES * 3):
     if (i_iter + 1) % BATCHES == 0:
         print(i_iter)
+    #save output in batch of 3
     pred = Variable(interp(all_predictions[i_iter])).cuda()
     output.append(interp(model(pred)))
     if (i_iter + 1) %3 == 0:
