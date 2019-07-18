@@ -153,6 +153,7 @@ for i_iter in range(BATCHES * 3):
         j = (i_iter + 1) / 3 - 1
         print(j)
         output = torch.cat((outputs[0], outputs[1], outputs[2]), 0)
+        print(output)
         torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/predictions" + str(j) + ".pth")
         output = []
 
