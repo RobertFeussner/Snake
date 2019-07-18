@@ -127,7 +127,6 @@ model.cuda()
 optimizer = optim.SGD([model.conv1.weight], lr=args.learning_rate, momentum=args.momentum,weight_decay=args.weight_decay)
 optimizer.zero_grad()
 
-
 #train & save intermediate models
 for i_iter in range(BATCHES * 3):
     optimizer.zero_grad()
@@ -153,7 +152,7 @@ for i_iter in range(BATCHES * 3):
         j = (i_iter + 1) // 3 - 1
         output = torch.cat((outputs[0], outputs[1], outputs[2]), 0)
         torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/predictions" + str(j) + ".pth")
-        output = []
+        outputs = []
 
 
 
