@@ -140,21 +140,19 @@ for i_iter in range(BATCHES * 3):
 
     if (i_iter + 1) % BATCHES == 0:
         print('[Iteration %d, loss = %f]' % (i_iter, loss))
-        # save model after a few steps
-        torch.save(model.state_dict(), "/root/VOC12_After_b14/TrainBatch3TensorsGPU/model" + str(i_iter) + ".pth")
 
 print("evaluate output")
 
-output = []
+outputs = []
 #save the output for the trained model
 for i_iter in range(BATCHES * 3):
-    if (i_iter + 1) % BATCHES == 0:
-        print(i_iter)
     #save output in batch of 3
     pred = Variable(interp(all_predictions[i_iter])).cuda()
-    output.append(interp(model(pred)))
+    outputs.append(interp(model(pred)))
     if (i_iter + 1) %3 == 0:
         j = (i_iter + 1) / 3 - 1
+        print(j)
+        output = torch.cat((outputs[0], outputs[1], outputs[2]), 0)
         torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/predictions" + str(j) + ".pth")
         output = []
 
