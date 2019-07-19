@@ -139,21 +139,17 @@ for i_iter in range(BATCHES * 3):
 
 print("evaluate output")
 
+outputs = []
 #save the output for the trained model
-
-for i in range(BATCHES):
-    images = torch.load('/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/images' + str(i)+ '.pth')	# the 3 original images
-    images = images.float()
-    #images = images.cuda()
-
-    outputs = []
-    for j in range(3):
-        image = Variable(images[j]).cuda()
-        outputs.append(interp(model(image)))
-
-    output = torch.cat((outputs[0], outputs[1], outputs[2]), 0)
-    torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/predictions" + str(i) + ".pth")
-    outputs = []
+for i_iter in range(BATCHES * 3):
+    #save output in batch of 3
+    pred = Variable(interp(all_predictions[i_iter])).cuda()
+    outputs.append(interp(model(pred)))
+    if (i_iter + 1) %3 == 0:
+        j = (i_iter + 1) // 3 - 1
+        output = torch.cat((outputs[0], outputs[1], outputs[2]), 0)
+        torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/predictions" + str(j) + ".pth")
+        outputs = []
 
 
 
