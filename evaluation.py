@@ -12,6 +12,7 @@ import sys
 import os.path as osp
 
 num_classes = 21
+BATCHES = 3
 
 #predicted = our result
 #target = ground_truth
@@ -167,7 +168,7 @@ for i in range(BATCHES):
         target = targets[j].unsqueeze(0)
         all_targets.append(target)
 
-print(evaluation(predictions,target))
+print(evaluate(all_predictions,all_targets))
 
 
 
