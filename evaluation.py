@@ -170,12 +170,28 @@ for i in range(BATCHES):
     targets = torch.load('/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/labels' + str(i) + '.pth')
     targets = targets.float()
 
+    images = torch.load('/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/images' + str(i) + '.pth')
+    images = images.float()
+
+
     for j in range(3):
-        prediction = predictions[j].unsqueeze(0)
-        prediction = torch.argmax(prediction, dim=0).cpu().numpy()
+        image = images[j]
+        output = predictions[j]
+
+        size = image.shape
+        size = size[0].numpy()
+        #output = model(Variable(image, volatile=True).cuda(gpu0))
+        output = output.cpu().data[0].numpy()
+
+        output = output[:, :size[0], :size[1]]
+        gt = np.asarray(label[0].numpy()[:size[0], :size[1]], dtype=np.int)
+
+        output = output.transpose(1, 2, 0)
+        output = np.asarray(np.argmax(output, axis=2), dtype=np.int)
+        all_predictions.append([gt.flatten(), output.flatten()])
+
         print("predictions")
-        print(prediction)
-        all_predictions.append(prediction)
+        print(output)
 
         target = targets[j].unsqueeze(0)
         all_targets.append(target)
