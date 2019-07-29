@@ -192,7 +192,7 @@ for i in range(BATCHES):
         output = prediction[:, :size[0], :size[1]]
         gt = np.asarray(targets[j].numpy()[:size[0], :size[1]], dtype=np.int)
 
-        output = output.transpose(1, 2, 0)
+        output = output.transpose(1, 2)
         output = np.asarray(np.argmax(output, axis=2), dtype=np.int)
         all_predictions.append([gt.flatten(), output.flatten()])
 
