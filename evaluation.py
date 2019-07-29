@@ -181,7 +181,7 @@ for i in range(BATCHES):
         output = predictions[j]
 
         size = image.shape
-        #size = size[0].numpy()
+        size = size[0]
         #output = model(Variable(image, volatile=True).cuda(gpu0))
         output = output.cpu().data[0].numpy()
 
