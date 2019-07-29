@@ -13,6 +13,7 @@ import os.path as osp
 
 num_classes = 21
 BATCHES = 3
+SIZE = 321
 
 #predicted = our result
 #target = ground_truth
@@ -171,6 +172,7 @@ for i in range(BATCHES):
 
     for j in range(3):
         prediction = predictions[j].unsqueeze(0)
+        size = SIZE.numpy
         prediction = prediction[:, :size[0], :size[1]]
 
         prediction = prediction.transpose(1, 2, 0)
