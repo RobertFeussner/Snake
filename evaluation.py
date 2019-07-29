@@ -182,7 +182,7 @@ for i in range(BATCHES):
 
     for j in range(3):
         image = images[j]
-        prediction = predictions[j]
+        prediction = predictions[j].unsqueeze(0)
 
         size = image.shape
         size = np.array(size)
