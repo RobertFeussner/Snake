@@ -124,7 +124,7 @@ def evaluate(predicted, target):
     else:
         ignore_index = tuple(ignore_index)
 
-    sconf_metric = ConfusionMatrix(num_classes, normalized)
+    conf_metric = ConfusionMatrix(num_classes, normalized)
 
     assert predicted.size(0) == target.size(0), \
         'number of targets and predicted outputs do not match'
@@ -177,7 +177,8 @@ for i in range(BATCHES):
         target = targets[j].unsqueeze(0)
         all_targets.append(target)
 
-print(evaluate(all_predictions,all_targets))
+for i in range(3 * BATCHES):
+    print(evaluate(all_predictions[i],all_targets[i]))
 
 
 
