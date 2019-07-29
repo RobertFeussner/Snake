@@ -9,6 +9,7 @@ import numpy as np
 from torch.utils import data
 import scipy.misc
 import sys
+import os
 import os.path as osp
 
 num_classes = 21
