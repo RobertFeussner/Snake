@@ -177,7 +177,7 @@ for i in range(BATCHES):
         target = targets[j].unsqueeze(0)
         all_targets.append(target)
 
-print(evaluate(all_predictions,all_targets))
+print(evaluate(_, all_predictions,all_targets))
 
 
 
