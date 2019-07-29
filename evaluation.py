@@ -122,8 +122,7 @@ def evaluate(predicted, target):
     elif isinstance(ignore_index, int):
         self.ignore_index = (ignore_index,)
     else:
-        try:
-            self.ignore_index = tuple(ignore_index)
+        self.ignore_index = tuple(ignore_index)
 
     self.conf_metric = ConfusionMatrix(num_classes, normalized)
 
