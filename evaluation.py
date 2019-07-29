@@ -114,17 +114,17 @@ class ConfusionMatrix(Metric):
         else:
             return self.conf
 
-def evaluate(self, predicted, target):
+def evaluate(predicted, target):
     normalized = False
     ignore_index = None
     if ignore_index is None:
-        self.ignore_index = None
+        ignore_index = None
     elif isinstance(ignore_index, int):
-        self.ignore_index = (ignore_index,)
+        ignore_index = (ignore_index,)
     else:
-        self.ignore_index = tuple(ignore_index)
+        ignore_index = tuple(ignore_index)
 
-    self.conf_metric = ConfusionMatrix(num_classes, normalized)
+    sconf_metric = ConfusionMatrix(num_classes, normalized)
 
     assert predicted.size(0) == target.size(0), \
         'number of targets and predicted outputs do not match'
@@ -139,13 +139,13 @@ def evaluate(self, predicted, target):
     if target.dim() == 4:
         _, target = target.max(1)
 
-    self.conf_metric.add(predicted.view(-1), target.view(-1))
+    conf_metric.add(predicted.view(-1), target.view(-1))
 
-    conf_matrix = self.conf_metric.value()
-    if self.ignore_index is not None:
-        for index in self.ignore_index:
-            conf_matrix[:, self.ignore_index] = 0
-            conf_matrix[self.ignore_index, :] = 0
+    conf_matrix = conf_metric.value()
+    if signore_index is not None:
+        for index in ignore_index:
+            conf_matrix[:, ignore_index] = 0
+            conf_matrix[ignore_index, :] = 0
     true_positive = np.diag(conf_matrix)
     false_positive = np.sum(conf_matrix, 0) - true_positive
     false_negative = np.sum(conf_matrix, 1) - true_positive
@@ -177,7 +177,7 @@ for i in range(BATCHES):
         target = targets[j].unsqueeze(0)
         all_targets.append(target)
 
-print(evaluate(_, all_predictions,all_targets))
+print(evaluate(all_predictions,all_targets))
 
 
 
