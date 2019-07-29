@@ -172,7 +172,7 @@ for i in range(BATCHES):
 
     for j in range(3):
         prediction = predictions[j].unsqueeze(0)
-        prediction = torch.argmax(prediction, dim=0).numpy()
+        prediction = torch.argmax(prediction, dim=0).cpu().numpy()
         print("predictions")
         print(prediction)
         all_predictions.append(prediction)
