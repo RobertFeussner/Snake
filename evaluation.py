@@ -178,14 +178,14 @@ for i in range(BATCHES):
 
     for j in range(3):
         image = images[j]
-        output = predictions[j]
+        prediction = predictions[j]
 
         size = image.shape
         size = size[0]
         #output = model(Variable(image, volatile=True).cuda(gpu0))
-        output = output.cpu().data[0].numpy()
+        #output = output.cpu().data[0].numpy()
 
-        output = output[:, :size[0], :size[1]]
+        output = prediction[:, :size[0], :size[1]]
         gt = np.asarray(label[0].numpy()[:size[0], :size[1]], dtype=np.int)
 
         output = output.transpose(1, 2, 0)
