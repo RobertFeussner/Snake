@@ -172,7 +172,7 @@ for i in range(BATCHES):
 
     for j in range(3):
         prediction = predictions[j].unsqueeze(0)
-        size = SIZE.numpy
+        size = SIZE.numpy()
         prediction = prediction[:, :size[0], :size[1]]
 
         prediction = prediction.transpose(1, 2, 0)
