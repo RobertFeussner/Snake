@@ -172,19 +172,15 @@ for i in range(BATCHES):
 
     for j in range(3):
         prediction = predictions[j].unsqueeze(0)
-        size = Variable(SIZE , SIZE , num_classes).numpy()
-        prediction = prediction[:, :size[0], :size[1]]
-
-        prediction = prediction.transpose(1, 2, 0)
-        prediction = np.asarray(np.argmax(prediction, axis=2), dtype=np.int)
-
-        print(prediction.flatten())
-
-        # show_all(gt, output)
-        all_predictions.append(prediction.flatten())
+        prediction = torch.argmax(prediction, dim=0).numpy()
+        print("predictions")
+        print(prediction)
+        all_predictions.append(prediction)
 
         target = targets[j].unsqueeze(0)
         all_targets.append(target)
+        print("ground truth")
+        print(target)
 
 
 for i in range(3 * BATCHES):
