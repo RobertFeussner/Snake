@@ -158,6 +158,9 @@ def evaluate(predicted, target):
     return iou, np.nanmean(iou)
 
 '''
+os.environ["CUDA_VISIBLE_DEVICES"]=str(0)
+cudnn.enabled = True
+cudnn.benchmark = True
 
 all_predictions = []
 all_targets = []
@@ -181,12 +184,12 @@ for i in range(BATCHES):
         prediction = predictions[j]
 
         size = image.shape
-        size = size[0]
+        size = np.array(size)
         #output = model(Variable(image, volatile=True).cuda(gpu0))
         #output = output.cpu().data[0].numpy()
 
         output = prediction[:, :size[0], :size[1]]
-        gt = np.asarray(label[0].numpy()[:size[0], :size[1]], dtype=np.int)
+        gt = np.asarray(targets[j].numpy()[:size[0], :size[1]], dtype=np.int)
 
         output = output.transpose(1, 2, 0)
         output = np.asarray(np.argmax(output, axis=2), dtype=np.int)
