@@ -171,10 +171,17 @@ for i in range(BATCHES):
 
     for j in range(3):
         prediction = predictions[j].unsqueeze(0)
-        all_predictions.append(prediction)
+        prediction = prediction[:, :size[0], :size[1]]
+
+        prediction = prediction.transpose(1, 2, 0)
+        prediction = np.asarray(np.argmax(prediction, axis=2), dtype=np.int)
+
+        # show_all(gt, output)
+        all_predictions.append(prediction.flatten())
 
         target = targets[j].unsqueeze(0)
         all_targets.append(target)
+
 
 for i in range(3 * BATCHES):
     print(evaluate(all_predictions[i],all_targets[i]))
