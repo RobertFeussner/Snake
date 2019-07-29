@@ -18,6 +18,7 @@ SIZE = 321
 #predicted = our result
 #target = ground_truth
 
+'''
 class Metric(object):
     """Base class for all metrics.
     From: https://github.com/pytorch/tnt/blob/master/torchnet/meter/meter.py
@@ -156,6 +157,7 @@ def evaluate(predicted, target):
 
     return iou, np.nanmean(iou)
 
+'''
 
 all_predictions = []
 all_targets = []
@@ -201,7 +203,7 @@ for i in range(BATCHES):
 
 for i in range(3 * BATCHES):
     print("evaluation")
-    print(evaluate(all_predictions[i],all_targets[i]))
+    #print(evaluate(all_predictions[i],all_targets[i]))
     print("\n")
 
 
