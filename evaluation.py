@@ -115,6 +115,16 @@ class ConfusionMatrix(Metric):
             return self.conf
 
 def evaluate(predicted, target):
+    normalized = False
+    ignore_index = None
+    if ignore_index is None:
+        self.ignore_index = None
+    elif isinstance(ignore_index, int):
+        self.ignore_index = (ignore_index,)
+    else:
+        try:
+            self.ignore_index = tuple(ignore_index)
+
     self.conf_metric = ConfusionMatrix(num_classes, normalized)
 
     assert predicted.size(0) == target.size(0), \
