@@ -114,7 +114,7 @@ class ConfusionMatrix(Metric):
         else:
             return self.conf
 
-def evaluate(predicted, target):
+def evaluate(self, predicted, target):
     normalized = False
     ignore_index = None
     if ignore_index is None:
