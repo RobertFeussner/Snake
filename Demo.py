@@ -1,3 +1,7 @@
+# This implementation enables you to segment single images and save them only using a terminal
+# Uses the Pytorch Deeplab V2 implemetation model
+# CUDA has to be enabled
+
 import argparse
 import random
 import matplotlib.pyplot as plt
@@ -34,47 +38,64 @@ import random
 import timeit
 start = timeit.default_timer()
 
+# Get the arguments to know what to do 
+
 parser = argparse.ArgumentParser(description="Demo")
 parser.add_argument("picture", type=str, help="Name of the picture in the same directory without jpg ending.")
 parser.add_argument("--AimDir", type=str, default='',help="Path to the directory to save the result.")
 parser.add_argument("--postProcessing", action="store_true",help="Whether to use Postprocessing.")
+parser.add_argument("--PathToPretrainedModel", type=str, help="Path to the pretrained Model. Default is /root/20000StepsDefaultParametersBatch6/VOC12_scenes_20000.pth")
 args = parser.parse_args()
 
 PATH = args.picture + '.jpg'
 
+# Approximately the mean
 mean=(128, 128, 128)
 
+# get the pictures and save their size (needed later on for changing the tensor to an image)
 image = cv2.imread(PATH, cv2.IMREAD_COLOR)
 size = image.shape
 np.array(size)
 image = np.asarray(image, np.float32)
+# Subtract the mean (for normalization and numerical stability)
 image -= mean
-        
+
+# Prepare it for the model
 img_h, img_w, _ = image.shape
 inter_size = (img_h, img_w)
 image = image.transpose((2, 0, 1))
 image = torch.from_numpy(image)
 
+# Change the single picture to a batch (otherwise a Pytorch Net cannot work with it)
 image = image.unsqueeze(0)
 
+# Prepare for the use of the GPU 
 gpu0 = 0
 os.environ["CUDA_VISIBLE_DEVICES"]=str(gpu0)
 cudnn.enabled = True
+
+# Initilize model
 model = Res_Deeplab(num_classes=21)
+
+# We use the path to the state dictionary on our own server as a default, can be changed with an argument
 pathToTrainedModel = '/root/20000StepsDefaultParametersBatch6/VOC12_scenes_20000.pth'
+if args.PathToPretrainedModel:
+    pathToTrainedModel = PathToPretrainedModel
 saved_state_dict = torch.load(pathToTrainedModel)
 model.load_state_dict(saved_state_dict)
+
+#prepare for evaluation and use of cuda (GPU)
 model.eval()
 model.cuda()
 
-image = Variable(image).cuda() #gets and saves a gpu output, for cpu see evaluate.py
+image = Variable(image).cuda() #gets and saves a gpu output
 
 interp = nn.Upsample(size=inter_size, mode='bilinear', align_corners=True)
 
+# puts the tensor through the model and returns the prediction (the segmentation)
 pred = interp(model(image))
-# Put the following layers here:
 
-
+# Converts the prediciton to a image and saves it under the atop defined name (given with the arguments)
 def saveImage(pred):
     output = pred.cpu().data[0].numpy()
 
@@ -97,12 +118,14 @@ def saveImage(pred):
     cmap = colors.ListedColormap(colormap)
     bounds=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]
     norm = colors.BoundaryNorm(bounds, cmap.N)
-
+    # Save the Image 
     ax.set_title('Prediction')
     ax.imshow(output, cmap=cmap, norm=norm)
+    ax.axis('off')
     s = '' + args.AimDir + args.picture + '.png'
     fig.savefig(s)
 
+# actually save our image via the function above
 if args.postProcessing:
     print('Sorry, not implemented yet!')
 else:
