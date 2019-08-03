@@ -92,6 +92,7 @@ interp = nn.Upsample(size=(SIZE,SIZE), mode='bilinear', align_corners=True)
 
 all_predictions = []
 all_labels = []
+#all_testdata = []
 
 
 for i in range(BATCHES):
@@ -105,6 +106,10 @@ for i in range(BATCHES):
     labels = labels.float()
     #labels = labels.cuda()
 
+    #testdata
+    #testdata = torch.load('...' + str(i) + '.pth')
+    #testdata = labels.float()
+
 
     for j in range(3):
         prediction = predictions[j].unsqueeze(0)
@@ -113,43 +118,71 @@ for i in range(BATCHES):
         label = labels[j].unsqueeze(0)
         all_labels.append(label)
 
+        # testdata
+        # test = testdata[j].unsqueeze(0)
+        # all_testdata.append(test)
+
+index = int(0.8 * BATCHES * 3)
+train_data = all_predictions[:index]
+train_data_labels = all_labels[:index]
+
+val_data = all_predictions[(index+1):]
+val_data_labels = all_labels[(index+1):]
 
 model = Net()
 model.to("cuda:0")
-model.train()
 model.cuda()
 
-
-#Stochastic Gradient Descent optimizer
+# Stochastic Gradient Descent optimizer
 optimizer = optim.SGD([model.conv1.weight], lr=args.learning_rate, momentum=args.momentum,weight_decay=args.weight_decay)
-optimizer.zero_grad()
 
-#train & save intermediate models
-for i_iter in range(BATCHES * 3):
-    optimizer.zero_grad()
-    pred = Variable(interp(all_predictions[i_iter])).cuda()
-    label = Variable(all_labels[i_iter])
-    output = interp(model(pred))
-    loss = loss_calc(output, label)
-    loss.backward()
-    optimizer.step()
+main_phase = 'not_eval'
+#train & save model
+if main_phase == 'not_eval':
+    for phase in ['train', 'val']:
+        if phase == 'train':
+            model.train()  # Set model to training mode
+        else:
+            model.eval()  # Set model to evaluate mode
+        optimizer.zero_grad()
+        if phase == 'train':
+            for i_iter in range(len(train_data)):
+                optimizer.zero_grad()
+                pred = Variable(interp(train_data[i_iter])).cuda()
+                label = Variable(train_data_labels [i_iter])
+                output = interp(model(pred))
+                loss = loss_calc(output, label)
+                if phase == 'train':
+                    loss.backward()
+                    optimizer.step()
 
-    if (i_iter + 1) % BATCHES == 0:
-        print('[Iteration %d, loss = %f]' % (i_iter, loss))
+        if phase == 'val':
+            for i_iter in range(len(val_data)):
+                pred = Variable(interp(val_data[i_iter])).cuda()
+                label = Variable(val_data_labels[i_iter])
+                output = interp(model(pred))
+                loss = loss_calc(output, label)
+                print('[Iteration %d, loss = %f]' % (i_iter, loss))
+            torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/model")
+            #also big for lr
 
-print("evaluate output")
 
-outputs = []
-#save the output for the trained model
-for i_iter in range(BATCHES * 3):
-    #save output in batch of 3
-    pred = Variable(interp(all_predictions[i_iter])).cuda()
-    outputs.append(interp(model(pred)))
-    if (i_iter + 1) %3 == 0:
-        j = (i_iter + 1) // 3 - 1
-        output = torch.cat((outputs[0], outputs[1], outputs[2]), 0)
-        torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/predictions" + str(j) + ".pth")
-        outputs = []
+main_phase = 'eval'
+if main_phase == 'eval':
+    outputs = []
+    model = torch.load("/root/VOC12_After_b14/TrainBatch3TensorsGPU/model")
+    model.eval()
+    #save the output for the trained model
+    for i_iter in range(BATCHES * 3):
+        #save output in batch of 3
+        #pred = Variable(interp(all_testdata[i_iter])).cuda()
+        pred = Variable(interp(all_predictions[i_iter])).cuda()
+        outputs.append(interp(model(pred)))
+        if (i_iter + 1) %3 == 0:
+            j = (i_iter + 1) // 3 - 1
+            output = torch.cat((outputs[0], outputs[1], outputs[2]), 0)
+            torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/predictions" + str(j) + ".pth")
+            outputs = []
 
 
 
