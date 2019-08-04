@@ -138,6 +138,9 @@ model.cuda()
 # Stochastic Gradient Descent optimizer
 optimizer = optim.SGD([model.conv1.weight], lr=args.learning_rate, momentum=args.momentum,weight_decay=args.weight_decay)
 
+train_loss_history = []
+val_loss_history = []
+
 main_phase = 'not_eval'
 #train & save model
 if main_phase == 'not_eval':
@@ -148,6 +151,7 @@ if main_phase == 'not_eval':
             model.eval()  # Set model to evaluate mode
         optimizer.zero_grad()
         if phase == 'train':
+            log_nth = len(train_data) - 1
             for i_iter in range(len(train_data)):
                 pred = Variable(interp(train_data[i_iter])).cuda()
                 label = Variable(train_data_labels [i_iter])
@@ -155,19 +159,30 @@ if main_phase == 'not_eval':
                 loss = loss_calc(output, label)
                 loss.backward()
                 optimizer.step()
-                print('[Iteration %d, loss = %f]' % (i_iter, loss))
+
+                train_loss_history.append(loss.data.cpu().numpy())
+                if i_iter % log_nth == 0:
+                    last_log_nth = train_loss_history[-log_nth:]
+                    train_loss = np.mean(last_log_nth)
 
 
         print("validation")
 
         if phase == 'val':
+            log_nth = len(val_data) - 1
             for i_iter in range(len(val_data)):
                 pred = Variable(interp(val_data[i_iter])).cuda()
                 label = Variable(val_data_labels[i_iter])
                 output = interp(model(pred))
                 loss = loss_calc(output, label)
-                print('[Iteration %d, loss = %f]' % (i_iter, loss))
+
+                val_loss_history.append(loss.data.cpu().numpy())
+                if i_iter % log_nth == 0:
+                    last_log_nth = val_loss_history[-log_nth:]
+                    validation_loss = np.mean(last_log_nth)
+
             torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/model")
+            print('[train loss/validation loss: %.3f/%.3f' % (train_loss, validation_loss))
 
 
 main_phase = 'eval'
