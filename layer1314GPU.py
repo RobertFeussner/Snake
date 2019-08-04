@@ -129,6 +129,8 @@ train_data_labels = all_labels[:index]
 val_data = all_predictions[(index+1):]
 val_data_labels = all_labels[(index+1):]
 
+print(index)
+
 model = Net()
 model.to("cuda:0")
 model.cuda()
