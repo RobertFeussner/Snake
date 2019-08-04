@@ -164,6 +164,7 @@ if main_phase == 'not_eval':
                 if i_iter % log_nth == 0:
                     last_log_nth = train_loss_history[-log_nth:]
                     train_loss = np.mean(last_log_nth)
+                    print('[train loss: %.3f' % train_loss)
 
 
         print("validation")
@@ -180,15 +181,16 @@ if main_phase == 'not_eval':
                 if i_iter % log_nth == 0:
                     last_log_nth = val_loss_history[-log_nth:]
                     validation_loss = np.mean(last_log_nth)
+                    print('[validation loss: %.3f' % validation_loss)
 
-            torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/model")
-            print('[train loss/validation loss: %.3f/%.3f' % (train_loss, validation_loss))
+            torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/small_lr")
 
+print("evaluation")
 
 main_phase = 'eval'
 if main_phase == 'eval':
     outputs = []
-    model = torch.load("/root/VOC12_After_b14/TrainBatch3TensorsGPU/model")
+    model = torch.load("/root/VOC12_After_b14/TrainBatch3TensorsGPU/small_lr/model")
     model.eval()
     #save the output for the trained model
     for i_iter in range(BATCHES * 3):
@@ -199,7 +201,7 @@ if main_phase == 'eval':
         if (i_iter + 1) %3 == 0:
             j = (i_iter + 1) // 3 - 1
             output = torch.cat((outputs[0], outputs[1], outputs[2]), 0)
-            torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/predictions" + str(j) + ".pth")
+            torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/small_lr/predictions" + str(j) + ".pth")
             outputs = []
 
 
