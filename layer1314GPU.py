@@ -153,9 +153,10 @@ if main_phase == 'not_eval':
                 label = Variable(train_data_labels [i_iter])
                 output = interp(model(pred))
                 loss = loss_calc(output, label)
-                if phase == 'train':
-                    loss.backward()
-                    optimizer.step()
+                loss.backward()
+                optimizer.step()
+                print('[Iteration %d, loss = %f]' % (i_iter, loss))
+
 
         print("validation")
 
