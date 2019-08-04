@@ -30,7 +30,7 @@ BATCHES = 3525
 
 
 LEARNING_RATE = 1.8e-4 #2.5e-4
-MOMENTUM = 0.9
+BETAS = (0.9, 0.999)
 WEIGHT_DECAY = 0.0005
 IGNORE_LABEL = 255
 
@@ -39,7 +39,7 @@ def get_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument("--learning-rate", type=float, default=LEARNING_RATE,
                         help="Base learning rate for training with polynomial decay.")
-    parser.add_argument("--momentum", type=float, default=MOMENTUM,
+    parser.add_argument("--betas", type=float, default=BETAS,
                         help="Momentum component of the optimiser.")
     parser.add_argument("--weight-decay", type=float, default=WEIGHT_DECAY,
                         help="Regularisation parameter for L2-loss.")
@@ -133,8 +133,8 @@ model = Net()
 model.to("cuda:0")
 model.cuda()
 
-# Stochastic Gradient Descent optimizer
-optimizer = optim.SGD([model.conv1.weight], lr=args.learning_rate, momentum=args.momentum,weight_decay=args.weight_decay)
+# Adam optimizer
+optimizer = optim.Adam([model.conv1.weight], lr=args.learning_rate, betas=args.betas, eps=1e-08, weight_decay=args.weight_decay, amsgrad=False)
 
 train_loss_history = []
 val_loss_history = []
