@@ -147,8 +147,9 @@ if main_phase == 'not_eval':
             model.train()  # Set model to training mode
         else:
             model.eval()  # Set model to evaluate mode
-        optimizer.zero_grad()
+
         if phase == 'train':
+            optimizer.zero_grad()
             log_nth = len(train_data) - 1
             for i_iter in range(len(train_data)):
                 pred = Variable(interp(train_data[i_iter])).cuda()
