@@ -147,7 +147,6 @@ if main_phase == 'not_eval':
         optimizer.zero_grad()
         if phase == 'train':
             for i_iter in range(len(train_data)):
-                optimizer.zero_grad()
                 pred = Variable(interp(train_data[i_iter])).cuda()
                 label = Variable(train_data_labels [i_iter])
                 output = interp(model(pred))
@@ -155,6 +154,8 @@ if main_phase == 'not_eval':
                 if phase == 'train':
                     loss.backward()
                     optimizer.step()
+
+        print("validation")
 
         if phase == 'val':
             for i_iter in range(len(val_data)):
@@ -164,7 +165,6 @@ if main_phase == 'not_eval':
                 loss = loss_calc(output, label)
                 print('[Iteration %d, loss = %f]' % (i_iter, loss))
             torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/model")
-            #also big for lr
 
 
 main_phase = 'eval'
