@@ -24,12 +24,12 @@ import timeit
 unfold = F.unfold
 SIZE = 321
 DOWNSAMPLE_SIZE = 50
-PATHb12 = "/root/VOC12_After_b12/TrainBatch3TensorsGPUSpatial/predictions"
+PATHb12 = "/root/VOC12_After_b12/TrainBatch3TensorsGPU/predictions"
 PATHb11 = "/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/labels"
 BATCHES = 3525
 
 
-LEARNING_RATE = 1.8e-4 #2.5e-4
+LEARNING_RATE = 1.9e-4 #1.8e-4
 BETAS = (0.9, 0.999)
 WEIGHT_DECAY = 0.0005
 IGNORE_LABEL = 255
@@ -180,14 +180,14 @@ if main_phase == 'not_eval':
                     validation_loss = np.mean(last_log_nth)
                     print('validation loss: %.3f' % validation_loss)
 
-            torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPUSpatial/small_lr/model")
+            torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
 
 print("evaluation")
 
 main_phase = 'eval'
 if main_phase == 'eval':
     outputs = []
-    model = torch.load("/root/VOC12_After_b14/TrainBatch3TensorsGPUSpatial/small_lr/model")
+    model = torch.load("/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
     model.eval()
     #save the output for the trained model
     for i_iter in range(BATCHES * 3):
@@ -198,7 +198,7 @@ if main_phase == 'eval':
         if (i_iter + 1) %3 == 0:
             j = (i_iter + 1) // 3 - 1
             output = torch.cat((outputs[0], outputs[1], outputs[2]), 0)
-            torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPUSpatial/small_lr/predictions" + str(j) + ".pth")
+            torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/predictions" + str(j) + ".pth")
             outputs = []
 
 
