@@ -129,8 +129,6 @@ train_data_labels = all_labels[:index]
 val_data = all_predictions[(index+1):]
 val_data_labels = all_labels[(index+1):]
 
-print(index)
-
 model = Net()
 model.to("cuda:0")
 model.cuda()
@@ -164,10 +162,8 @@ if main_phase == 'not_eval':
                 if i_iter % log_nth == 0:
                     last_log_nth = train_loss_history[-log_nth:]
                     train_loss = np.mean(last_log_nth)
-                    print('[train loss: %.3f' % train_loss)
+                    print('train loss: %.3f' % train_loss)
 
-
-        print("validation")
 
         if phase == 'val':
             log_nth = len(val_data) - 1
@@ -181,9 +177,9 @@ if main_phase == 'not_eval':
                 if i_iter % log_nth == 0:
                     last_log_nth = val_loss_history[-log_nth:]
                     validation_loss = np.mean(last_log_nth)
-                    print('[validation loss: %.3f' % validation_loss)
+                    print('validation loss: %.3f' % validation_loss)
 
-            torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/small_lr")
+            torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/small_lr/model")
 
 print("evaluation")
 
