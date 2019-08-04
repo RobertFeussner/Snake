@@ -29,7 +29,7 @@ PATHb11 = "/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/labels"
 BATCHES = 3525
 
 
-LEARNING_RATE = 1.9e-4 #1.8e-4
+LEARNING_RATE = 1.85e-4 #1.8e-4
 BETAS = (0.9, 0.999)
 WEIGHT_DECAY = 0.0005
 IGNORE_LABEL = 255
@@ -181,8 +181,6 @@ if main_phase == 'not_eval':
                     print('validation loss: %.3f' % validation_loss)
 
             torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
-
-print("evaluation")
 
 main_phase = 'eval'
 if main_phase == 'eval':
