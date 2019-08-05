@@ -28,6 +28,8 @@ NUM_CLASSES = 21
 NUM_STEPS = 1449 # Number of images in the validation set.
 RESTORE_FROM = '/root/20000StepsDefaultParametersBatch6/VOC12_scenes_20000.pth'
 
+SAVE_TO = '/root/VOC12_After_Deeplab_Test'
+
 
 def get_iou(data_list, class_num, save_path=None):
     from multiprocessing import Pool 
@@ -60,20 +62,24 @@ def main():
     model.eval()
     model.cuda(gpu0)
 
-    testloader = data.DataLoader(VOCDataSet(DATA_DIRECTORY, DATA_LIST_PATH, crop_size=(505, 505), mean=IMG_MEAN, scale=False, mirror=False), 
+    testloader = data.DataLoader(VOCDataSet(DATA_DIRECTORY, DATA_LIST_PATH, crop_size=(321, 321), mean=IMG_MEAN, scale=False, mirror=False), 
                                     batch_size=1, shuffle=False, pin_memory=True)
 
-    interp = nn.Upsample(size=(505, 505), mode='bilinear', align_corners=True)
+    interp = nn.Upsample(size=(321, 321), mode='bilinear', align_corners=True) #changed to model 321,321
     data_list = []
 
     for index, batch in enumerate(testloader):
         if index % 100 == 0:
             print('%d processd'%(index))
+        torch.save(batch, SAVE_TO + '/batch' + str(index) + '.pth') # Save the batch
         image, label, size, name = batch
-        print(batch)
         size = size[0].numpy()
         output = model(Variable(image, volatile=True).cuda(gpu0))
-        output = interp(output).cpu().data[0].numpy()
+
+        output = interp(output)
+        torch.save(batch, SAVE_TO + '/prediction' + str(index) + '.pth') #Save b11 prediction
+
+        output = output.cpu().data[0].numpy()
 
         output = output[:,:size[0],:size[1]]
         gt = np.asarray(label[0].numpy()[:size[0],:size[1]], dtype=np.int)
