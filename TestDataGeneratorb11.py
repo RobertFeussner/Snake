@@ -77,7 +77,7 @@ def main():
         output = model(Variable(image, volatile=True).cuda(gpu0))
 
         output = interp(output)
-        torch.save(batch, SAVE_TO + '/prediction' + str(index) + '.pth') #Save b11 prediction
+        torch.save(output, SAVE_TO + '/prediction' + str(index) + '.pth') #Save b11 prediction
 
         output = output.cpu().data[0].numpy()
 
