@@ -70,8 +70,7 @@ def main():
         if index % 100 == 0:
             print('%d processd'%(index))
         image, label, size, name = batch
-        print(type(batch)
-        return
+        print(batch)
         size = size[0].numpy()
         output = model(Variable(image, volatile=True).cuda(gpu0))
         output = interp(output).cpu().data[0].numpy()
