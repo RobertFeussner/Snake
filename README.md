@@ -1,6 +1,6 @@
-# Project Title
+# Snake Robot - Image Segmentation
 
-One Paragraph of project description goes here
+The reimplememtation of the paper "Title and Link" for the usage in the Snake Robot Project of the Technical university of Munich.
 
 ## Getting Started
 
