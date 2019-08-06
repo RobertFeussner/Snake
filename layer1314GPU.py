@@ -32,7 +32,7 @@ LEARNING_RATE = 1.9e-4 #1.8e-4
 BETAS = (0.9, 0.999)
 WEIGHT_DECAY = 0.0005
 IGNORE_LABEL = 255
-
+NUM_CLASSES = 21
 
 #arguments function
 def get_arguments():
@@ -118,6 +118,7 @@ for i in range(TEST_BATCHES):
     testdata = testdata[0].unsqueeze(0)
     all_testdata.append(testdata)
 
+
 index = int(0.8 * BATCHES * 3)
 train_data = all_predictions[:index]
 train_data_labels = all_labels[:index]
@@ -178,6 +179,31 @@ if main_phase == 'not_eval':
 
             torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
 
+
+sys.path.append('Pytorch-Deeplab') # needed for the next 2 lines
+
+from deeplab.model import Res_Deeplab
+from collections import OrderedDict
+
+def get_iou(data_list, class_num, save_path=None):
+    from multiprocessing import Pool
+    from deeplab.metric import ConfusionMatrix
+
+    ConfM = ConfusionMatrix(class_num)
+    f = ConfM.generateM
+    pool = Pool()
+    m_list = pool.map(f, data_list)
+    pool.close()
+    pool.join()
+
+    for m in m_list:
+        ConfM.addM(m)
+
+    aveJ, j_list, M = ConfM.jaccard()
+    print('meanIOU: ' + str(aveJ) + '\n')
+
+
+data_list = []
 if main_phase == 'eval':
     model = torch.load("/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
     for i_iter in range(TEST_BATCHES):
@@ -185,6 +211,22 @@ if main_phase == 'eval':
         pred = Variable(interp(all_testdata[i_iter])).cuda()
         output = interp(model(pred))
         torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPUTest/predictions" + str(i_iter) + ".pth")
+
+        test_batch_b11 = torch.load("/root/VOC12_After_Deeplab_Test/batch" + str(i) + '.pth')
+        image, label, size, name = test_batch11
+        size = size[0].numpy()
+
+        output = output.cpu().data[0].numpy()
+
+        output = output[:, :size[0], :size[1]]
+        gt = np.asarray(label[0].numpy()[:size[0], :size[1]], dtype=np.int)
+
+        output = output.transpose(1, 2, 0)
+        output = np.asarray(np.argmax(output, axis=2), dtype=np.int)
+
+        data_list.append([gt.flatten(), output.flatten()])
+
+    get_iou(data_list, NUM_CLASSES)
 
 
 
