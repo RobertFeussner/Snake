@@ -50,7 +50,7 @@ def saveImage(gt, pred1, pred2, img):
     ax4.imshow(pred2, cmap=cmap, norm=norm)
     ax4.axis('off')
 
-    fig.savefig('TestImage' + str(args.index))
+    fig.savefig('TestImages/TestImage' + str(args.index))
 
 def changeOutput(output):
     output = output.data[0].numpy()
