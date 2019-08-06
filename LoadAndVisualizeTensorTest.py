@@ -2,7 +2,7 @@ import torch
 from matplotlib import colors
 import matplotlib.pyplot as plt
 import numpy as np
-
+import cv2
 import argparse
 
 parser = argparse.ArgumentParser(description="Visualize a Test Image and save it as an image")
@@ -71,9 +71,9 @@ pred1 = changeOutput(pred1)
 pred2 = torch.load('/root/VOC12_After_Deeplab_Test/prediction' + str(args.index) + '.pth', map_location='cpu') #change to new one!!!
 pred2 = changeOutput(pred2)
 
-img = plt.imread('/root/VOCdevkit/VOC2012/JPEGImages/' + str(batch[3][0]) + '.jpg')
+img = cv2.imread('/root/VOCdevkit/VOC2012/JPEGImages/' + str(batch[3][0]) + '.jpg', cv2.IMREAD_COLOR)
 
-saveImage(gt, pred1, pred2, image)
+saveImage(gt, pred1, pred2, img)
 
 
 
