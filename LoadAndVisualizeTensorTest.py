@@ -68,7 +68,7 @@ image = np.asarray(image[0].numpy()[:size[0],:size[1]], dtype=np.int)
 image = image.transpose(1,2,0)
 pred1 = torch.load('/root/VOC12_After_Deeplab_Test/prediction' + str(args.index) + '.pth', map_location='cpu')
 pred1 = changeOutput(pred1)
-pred2 = torch.load('/root/VOC12_After_b14/TrainBatch3TensorsGPUTest/predictions' + str(args.index) + '.pth', map_location='cpu') #change to new one!!!
+pred2 = torch.load('/root/VOC12_After_b12/TrainBatch3TensorsGPUTest/predictions' + str(args.index) + '.pth', map_location='cpu') #change to new one!!!
 pred2 = changeOutput(pred2)
 
 img = plt.imread('/root/VOCdevkit/VOC2012/JPEGImages/' + str(batch[3][0]) + '.jpg')
