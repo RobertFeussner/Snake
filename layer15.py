@@ -44,7 +44,7 @@ def main():
     #compute(b11_path = b11_location + "/TrainBatch3TensorsGPU", b14_path = b14_location + "/TrainBatch3TensorsGPU",
     #        output_path = output_location + "/TrainBatch3TensorsGPU", num_batches = 3525, batch_size = 3)
     # the line below computes the results for the evaluation data
-    compute(b11_path=b11_location + "/TrainBatch3TensorsGPUTest", b14_path=b14_location + "/TrainBatch3TensorsGPUTest",
+    compute(b11_path=parent + "/VOC12_After_Deeplab_Test", b14_path=b14_location + "/TrainBatch3TensorsGPUTest",
             output_path=output_location + "/TrainBatch3TensorsGPUTest", num_batches = 1449, batch_size = 1)
 
 
