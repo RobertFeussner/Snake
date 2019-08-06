@@ -66,7 +66,7 @@ This script allows you to visualize any of the 1449 Test images that are saved t
 python LoadAndVisualizeTensorTest.py 12
 ```
 
-This will save the 13. test image with its ground truth and its predictions both normal and postprocessed under __TestImages/TestImage13.png___
+This will save the 13. test image with its ground truth and its predictions both normal and postprocessed under __TestImages/TestImage13.png__
 
 ### TestImages 
 
@@ -99,14 +99,14 @@ For everything to run properly you have to install a few prerequisites, of which
 * [Pascal VOC 2012 devkit](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/index.html)
 * [AugmentationPascalVoc supplement](https://www.dropbox.com/s/oeu149j8qtbs1x0/SegmentationClassAug.zip?dl=0)
 * [A pretrained Deeplab V2 model](https://drive.google.com/file/d/0BxhUwxvLPO7TVFJQU1dwbXhHdEk/view)
-* [CUDA Toolkit](https://developer.nvidia.com/cuda-downloads) for GPU
+* [CUDA Toolkit](https://developer.nvidia.com/cuda-downloads) for GPU (needs NVIDIA graphic card)
 * [Pytorch](https://pytorch.org/)
 * Python libraries, e.g.
-** Matplotlib
-** Numpy
-** openCV
-** Scipy
-** etc.
+..* Matplotlib
+..* Numpy
+..* openCV
+..* Scipy
+..* etc.
 
 The paths of the single files also have to be correct or changed in above mentioned scripts at the concerning Paths. Further, we highly recommend a UNIX based enviroment.
 
