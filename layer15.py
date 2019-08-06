@@ -42,20 +42,22 @@ def main():
 
     # the line below computes the results for the training data
     #compute(b11_path = b11_location + "/TrainBatch3TensorsGPU", b14_path = b14_location + "/TrainBatch3TensorsGPU",
-    #        output_path = output_location + "/TrainBatch3TensorsGPU", num_batches = 3525, batch_size = 3)
+    #        output_path = output_location + "/TrainBatch3TensorsGPU", num_batches = 3525, batch_size = 3,
+    #        name = "/predictions")
     # the line below computes the results for the evaluation data
     compute(b11_path=parent + "/VOC12_After_Deeplab_Test", b14_path=b14_location + "/TrainBatch3TensorsGPUTest",
-            output_path=output_location + "/TrainBatch3TensorsGPUTest", num_batches = 1449, batch_size = 1)
+            output_path=output_location + "/TrainBatch3TensorsGPUTest", num_batches = 1449, batch_size = 1,
+            name = "/prediction")
 
 
-def compute(b11_path, b14_path, output_path, num_batches, batch_size):
+def compute(b11_path, b14_path, output_path, num_batches, batch_size, name):
 
     for i in range(num_batches):  # loop over all the batches
 
         # both data sources are 3x21x321x321 (batch size x categories x downsampled image dimensions)
-        b11 = torch.load(b11_path + "/predictions" + str(i) + ".pth")
+        b11 = torch.load(b11_path + name + str(i) + ".pth")
         #print(b11.size())
-        b14 = torch.load(b14_path + "/predictions" + str(i) + ".pth")
+        b14 = torch.load(b14_path + name + str(i) + ".pth")
         #print(b14.size())
         b15 = torch.zeros([3, 21, 321, 321])  # tensor to store output of this batch
 
@@ -71,7 +73,7 @@ def compute(b11_path, b14_path, output_path, num_batches, batch_size):
             for k in range(21):
                 b15[j,k] = b15[j,k].to(device)/den.to(device)  # divide every category's fmap by the denominator
 
-        torch.save(b15, output_path + "/predictions" + str(i) + ".pth")
+        torch.save(b15, output_path + name + str(i) + ".pth")
         if i==1: break
         print(i)
 
