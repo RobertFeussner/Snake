@@ -21,8 +21,8 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 dirpath = os.getcwd()
 parent = os.path.dirname(dirpath)
-b11_location = parent + "/VOC12_After_Deeplab/TrainBatch3TensorsGPU"
-b14_location = parent + "/VOC12_After_b14/TrainBatch3TensorsGPU"
+b11_location = parent + "/VOC12_After_Deeplab"
+b14_location = parent + "/VOC12_After_b14"
 output_location = parent + "/VOC12_After_b15"
 
 
@@ -35,21 +35,31 @@ def main():
     print("This is the parent directory: " + parent)
     print("This is the location of the b11 data: " + b11_location)
     print("This is the location of the b14 data: " + b14_location)
-    print("This is the location where the b15 output will be stored: " + output_location)
+    print("b15 folder path: " + output_location)
 
     # Note: the output of an image after b11 is assumed to be saved with the same name as the output after b14 for that
     #  image within their respective folders.
 
-    for i in range(3525):  # loop over all the batches
+    # the line below computes the results for the training data
+    #compute(b11_path = b11_location + "/TrainBatch3TensorsGPU", b14_path = b14_location + "/TrainBatch3TensorsGPU",
+    #        output_path = output_location + "/TrainBatch3TensorsGPU", num_batches = 3525, batch_size = 3)
+    # the line below computes the results for the evaluation data
+    compute(b11_path=b11_location + "/TrainBatch3TensorsGPUTest", b14_path=b14_location + "/TrainBatch3TensorsGPUTest",
+            output_path=output_location + "/TrainBatch3TensorsGPUTest", num_batches = 1449, batch_size = 1)
+
+
+def compute(b11_path, b14_path, output_path, num_batches, batch_size):
+
+    for i in range(num_batches):  # loop over all the batches
 
         # both data sources are 3x21x321x321 (batch size x categories x downsampled image dimensions)
-        b11 = torch.load(b11_location + "/predictions" + str(i) + ".pth")
+        b11 = torch.load(b11_path + "/predictions" + str(i) + ".pth")
         #print(b11.size())
-        b14 = torch.load(b14_location + "/predictions" + str(i) + ".pth")
+        b14 = torch.load(b14_path + "/predictions" + str(i) + ".pth")
         #print(b14.size())
         b15 = torch.zeros([3, 21, 321, 321])  # tensor to store output of this batch
 
-        for j in range(3):  # loop over the individual 3D tensors within a batch
+        for j in range(batch_size):  # loop over the individual 3D tensors within a batch
             den = torch.zeros([321, 321])  # variable to sum over the categories to get the denominator of Eqn. 15
             for k in range(21):  # loop over all the categories within one 3D tensor
                 fmap11 = b11[j, k].to(device)  # kth category in the jth feature map of this batch
@@ -61,13 +71,11 @@ def main():
             for k in range(21):
                 b15[j,k] = b15[j,k].to(device)/den.to(device)  # divide every category's fmap by the denominator
 
-        torch.save(b15, output_location + "/predictions" + str(i) + ".pth")
-        #if i == 1: break
+        torch.save(b15, output_path + "/predictions" + str(i) + ".pth")
+        if i==1: break
         print(i)
 
-
-
-
+# a function used to test the code in main
 def test():
 
     # for testing purposes I reduced the mock image size because my computer is too slow otherwise
