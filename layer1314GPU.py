@@ -213,7 +213,7 @@ if main_phase == 'eval':
         torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPUTest/predictions" + str(i_iter) + ".pth")
 
         test_batch_b11 = torch.load("/root/VOC12_After_Deeplab_Test/batch" + str(i) + '.pth')
-        image, label, size, name = test_batch11
+        image, label, size, name = test_batch_b11
         size = size[0].numpy()
 
         output = output.cpu().data[0].numpy()
