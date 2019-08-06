@@ -81,8 +81,13 @@ def compute(b11_path, b14_path, output_path, num_batches, batch_size, name_b11, 
 
                 num = torch.exp(torch.log(fmap11)-fmap14)  # compute the numerator of Eqn. 15
 
-                print("b11" + fmap11)
-                print("b14" + fmap14)
+                print("fmap11")
+                print(fmap11)
+                print("fmap14")
+                print(fmap14)
+                print("difference")
+                print(torch.log(fmap11)-fmap14)
+
 
                 b15[j,k] = num  # store the numerator so that we can later divide by the denominator
                 den = den.to(device) + num.to(device)  # summing over all the categories to get den
