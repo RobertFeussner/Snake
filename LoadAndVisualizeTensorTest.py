@@ -71,7 +71,7 @@ pred1 = changeOutput(pred1)
 pred2 = torch.load('/root/VOC12_After_Deeplab_Test/prediction' + str(args.index) + '.pth', map_location='cpu') #change to new one!!!
 pred2 = changeOutput(pred2)
 
-img = cv2.imread('/root/VOCdevkit/VOC2012/JPEGImages/' + str(batch[3][0]) + '.jpg', cv2.IMREAD_COLOR)
+img = plt.imread('/root/VOCdevkit/VOC2012/JPEGImages/' + str(batch[3][0]) + '.jpg')
 
 saveImage(gt, pred1, pred2, img)
 
