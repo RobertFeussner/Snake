@@ -24,17 +24,17 @@ import timeit
 unfold = F.unfold
 SIZE = 321
 DOWNSAMPLE_SIZE = 50
-PATHb12 = "/root/VOC12_After_b12/TrainBatch3TensorsGPUSpatial/predictions"
+PATHb12 = "/root/VOC12_After_b12/TrainBatch3TensorsGPU/predictions"
 PATHb11 = "/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/labels"
 BATCHES = 3525
-
-
+TEST_BATCHES = 1449
 LEARNING_RATE = 1.9e-4 #1.8e-4
 BETAS = (0.9, 0.999)
 WEIGHT_DECAY = 0.0005
 IGNORE_LABEL = 255
 
-#arguments function - from DeepLab
+
+#arguments function
 def get_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument("--learning-rate", type=float, default=LEARNING_RATE,
@@ -92,23 +92,18 @@ interp = nn.Upsample(size=(SIZE,SIZE), mode='bilinear', align_corners=True)
 
 all_predictions = []
 all_labels = []
-#all_testdata = []
+all_testdata = []
 
+main_phase = 'eval'
 
 for i in range(BATCHES):
     #load results from b12
     predictions = torch.load(PATHb12 + str(i)+ '.pth') # b12 3 predictions
     predictions = predictions.float()
-    #predictions = predictions.cuda()
 
     #load labels = ground truth
     labels = torch.load(PATHb11 + str(i) + '.pth')
     labels = labels.float()
-    #labels = labels.cuda()
-
-    #testdata
-    #testdata = torch.load('...' + str(i) + '.pth')
-    #testdata = labels.float()
 
 
     for j in range(3):
@@ -118,9 +113,10 @@ for i in range(BATCHES):
         label = labels[j].unsqueeze(0)
         all_labels.append(label)
 
-        # testdata
-        # test = testdata[j].unsqueeze(0)
-        # all_testdata.append(test)
+for i in range(TEST_BATCHES):
+    testdata = torch.load("/root/VOC12_After_b12/TrainBatch3TensorsGPUTest/predictions" + str(i) + '.pth')
+    testdata = testdata.unsqueeze(0)
+    all_testdata.append(testdata)
 
 index = int(0.8 * BATCHES * 3)
 train_data = all_predictions[:index]
@@ -139,7 +135,7 @@ optimizer = optim.Adam([model.conv1.weight], lr=args.learning_rate, betas=args.b
 train_loss_history = []
 val_loss_history = []
 
-main_phase = 'not_eval'
+
 #train & save model
 if main_phase == 'not_eval':
     for phase in ['train', 'val']:
@@ -180,24 +176,15 @@ if main_phase == 'not_eval':
                     validation_loss = np.mean(last_log_nth)
                     print('validation loss: %.3f' % validation_loss)
 
-            torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPUSpatial/big_lr/model")
+            torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
 
-main_phase = 'eval'
 if main_phase == 'eval':
-    outputs = []
-    model = torch.load("/root/VOC12_After_b14/TrainBatch3TensorsGPUSpatial/big_lr/model")
-    model.eval()
-    #save the output for the trained model
-    for i_iter in range(BATCHES * 3):
-        #save output in batch of 3
-        #pred = Variable(interp(all_testdata[i_iter])).cuda()
-        pred = Variable(interp(all_predictions[i_iter])).cuda()
-        outputs.append(interp(model(pred)))
-        if (i_iter + 1) %3 == 0:
-            j = (i_iter + 1) // 3 - 1
-            output = torch.cat((outputs[0], outputs[1], outputs[2]), 0)
-            torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPUSpatial/big_lr/predictions" + str(j) + ".pth")
-            outputs = []
+    model = torch.load("/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
+    for i_iter in range(TEST_BATCHES):
+        #save test output in batch of 1
+        pred = Variable(interp(all_testdata[i_iter])).cuda()
+        output = interp(model(pred))
+        torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPUTest/predictions" + str(i_iter) + ".pth")
 
 
 
