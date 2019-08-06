@@ -12,10 +12,10 @@ Probability of assigning label u to pixel at r,c is normalized over all the labe
 """
 from __future__ import division
 import torch
-import torchvision
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import sys
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -24,7 +24,7 @@ parent = os.path.dirname(dirpath)
 b11_location = parent + "/VOC12_After_Deeplab"
 b14_location = parent + "/VOC12_After_b14"
 output_location = parent + "/VOC12_After_b15"
-
+NUM_CLASSES = 21
 
 
 def main():
@@ -49,6 +49,18 @@ def main():
             output_path=output_location + "/TrainBatch3TensorsGPUTest", num_batches = 1449, batch_size = 1,
             name_b11 = "/prediction", name_b14 = "/predictions")
 
+
+
+"""
+this function has a lot of parameters:
+    b11_path: path where b11 data for this computation comes from
+    b14_path: path where b14 data for this computation comes from
+    output_path: path where the output for this computation will be stored
+    num_batches: the number of batches there are for this computation (assuming equal batch number for b11 and b14)
+    batch_size: the batch size in which data is stored for this computation (assuming equal batch size for b11 and b14)
+    name_b11: the name which was used by Robert to preceed the index of a batch of output data, e.g. prediction(s)
+    name_b14: the name which was used by Iulia to preceed the index of a batch of output data, e.g. prediction(s)
+"""
 
 def compute(b11_path, b14_path, output_path, num_batches, batch_size, name_b11, name_b14):
 
@@ -76,6 +88,8 @@ def compute(b11_path, b14_path, output_path, num_batches, batch_size, name_b11, 
         torch.save(b15, output_path + name_b14 + str(i) + ".pth")
         if i==1: break
         print(i)
+
+
 
 # a function used to test the code in main
 def test():
@@ -110,8 +124,6 @@ def test():
     plt.show()
     print("end")
 
-def evaluation():
-    torch.load(b11_location + "/predictions" + str(i) + ".pth")
 
 if __name__ == "__main__":
     main()
