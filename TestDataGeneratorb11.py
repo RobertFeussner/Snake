@@ -25,7 +25,7 @@ DATA_DIRECTORY = '/root/VOCdevkit/VOC2012/'
 DATA_LIST_PATH = '/root/Snake/Pytorch-Deeplab/dataset/list/val.txt'
 IGNORE_LABEL = 255
 NUM_CLASSES = 21
-NUM_STEPS = 1449 # Number of images in the validation set.
+NUM_STEPS = 1449 # Number of images in the test set.
 RESTORE_FROM = '/root/20000StepsDefaultParametersBatch6/VOC12_scenes_20000.pth'
 
 SAVE_TO = '/root/VOC12_After_Deeplab_Test'
