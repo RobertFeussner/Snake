@@ -102,11 +102,11 @@ For everything to run properly you have to install a few prerequisites, of which
 * [CUDA Toolkit](https://developer.nvidia.com/cuda-downloads) for GPU (needs NVIDIA graphic card)
 * [Pytorch](https://pytorch.org/)
 * Python libraries, e.g.
-..* Matplotlib
-..* Numpy
-..* openCV
-..* Scipy
-..* etc.
+    * Matplotlib
+    * Numpy
+    * openCV
+    * Scipy
+    * etc.
 
 The paths of the single files also have to be correct or changed in above mentioned scripts at the concerning Paths. Further, we highly recommend a UNIX based enviroment.
 
