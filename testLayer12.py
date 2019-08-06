@@ -25,6 +25,7 @@ unfold = F.unfold
 SIZE = 321
 DOWNSAMPLE_SIZE = 50
 NUM_CLASSES = 21
+TEST_BATCHES = 1449
 
 
 os.environ["CUDA_VISIBLE_DEVICES"]=str(0)
