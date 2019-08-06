@@ -13,7 +13,7 @@ This folder contains a Github [Deeplab V2](https://github.com/speedinghzl/Pytorc
 We used this to train our Deeplab V2 model and do our evaluations on it. We got a final accuracy of around 73% on the test set, similiar to the result they have in their project.
 Please make sure, that you need to download all the files  mentioned on their project site, as they are required for it to work and cannot be downloaded by git directly (files too big).
 
-## DataGeneratorb11
+### DataGeneratorb11
 
 Once you have trained your model and saved its state dictonary via the Pytorch Deeplab implementation, you can use the _DataGeneratorb11.py_ in order to run all the 10575 training images through the model and save its predictions, the groundtruth and the images in batches of a size of your choice. They can be used for postprocessing. It is important that you change __pathToTrainedModel__ inside the script. Also make sure that all the given paths exist in that way, if necessary change them. It should be mentioned that folder are not created automatically, they have to be created manually. Then, you can simply run it with the default parameters with the following command:
 
@@ -23,11 +23,11 @@ python DataGeneratorb11
 
 If you want to change other parameters, e.g. need smaller batches, because the GPU does not have enough space, you can change it directly in the file itself (it is commented).
 
-## b11Loader
+### b11Loader
 
 This script itself (_b11Loader.py_) has no function on its own, but explains how to load the data produced by DataGeneratorb11 for postprocessing purposes.
 
-## TestDataGeneratorb11
+### TestDataGeneratorb11
 
 Similiar to the DataGeneratorb11, this script loads the test images, passes them through the final model and prepares the data for postprocessing. Simultaneously it calculates the Mean IoU over the test set and offers thus an evalution possibility. Be sure to adapt all the paths in the script before running it via
 
@@ -35,7 +35,7 @@ Similiar to the DataGeneratorb11, this script loads the test images, passes them
 python TestDataGeneratorb11.py
 ```
 
-## Demo
+### Demo
 
 The script _Demo.py_ offers a simple terminal based way to segment single images without postprocessing. By passing it the required arguments, you can simply segment images that are new to the model. It uses the Pytorch Deeplab V2 model. An example use case would be a Snake robot locating and classifing objects. If the you have the same path to your state dictonary as the default and an image, for example __sheep.jpg__ in the same folder, you can simply run the following which saves the segmented image under __sheep.png__.
 
@@ -50,7 +50,7 @@ python Demo.py sheep --AimDir='Myfolder/' --PathToPretrainedModel='/myroot/my_st
 ```
 This saves the image in __Myfolder/sheep.png__
 
-## LoadAndVisualizeTensor
+### LoadAndVisualizeTensor
 
 This script takes a prediction tensor, for example from the training set without postprocessing, and visualizes it using an extern function. E.g. with a prediction batch saved in __/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/predictions0.pth__ where you want the first prediction of the batch (index 0) saved as __segmentation.png__ you can use the following command.
 
@@ -58,7 +58,7 @@ This script takes a prediction tensor, for example from the training set without
 python LoadAndVisualizeTensor.py '/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/predictions0.pth' 0 'segmentation'
 ```
 
-## LoadAndVisualizeTensorTest
+### LoadAndVisualizeTensorTest
 
 This script allows you to visualize any of the 1449 Test images that are saved to the disk. Once you successfully ran _TestDataGenerator.py_, did the postprocessing steps, created a folder __TestImages__ and updated your paths inside the script, you can simply run in example:
 
