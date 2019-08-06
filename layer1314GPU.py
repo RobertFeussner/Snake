@@ -185,6 +185,7 @@ if main_phase == 'eval':
         pred = Variable(interp(all_testdata[i_iter])).cuda()
         output = interp(model(pred))
         torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPUTest/predictions" + str(i_iter) + ".pth")
+        
 
 
 
