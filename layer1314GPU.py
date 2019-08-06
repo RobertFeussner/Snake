@@ -115,7 +115,7 @@ for i in range(BATCHES):
 
 for i in range(TEST_BATCHES):
     testdata = torch.load("/root/VOC12_After_b12/TrainBatch3TensorsGPUTest/predictions" + str(i) + '.pth')
-    testdata = testdata.unsqueeze(0)
+    testdata = testdata[0].unsqueeze(0)
     all_testdata.append(testdata)
 
 index = int(0.8 * BATCHES * 3)
@@ -185,7 +185,7 @@ if main_phase == 'eval':
         pred = Variable(interp(all_testdata[i_iter])).cuda()
         output = interp(model(pred))
         torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPUTest/predictions" + str(i_iter) + ".pth")
-        
+
 
 
 
