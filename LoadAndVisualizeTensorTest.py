@@ -50,12 +50,11 @@ def saveImage(gt, pred1, pred2, img):
     ax4.imshow(pred2, cmap=cmap, norm=norm)
     ax4.axis('off')
 
-    fig.savefig('TestImage' + str(index))
+    fig.savefig('TestImage' + str(args.index))
 
 def changeOutput(output):
     output = output.data[0].numpy()
     output = output[:,:size[0],:size[1]]
-    gt = np.asarray(label[0].numpy()[:size[0],:size[1]], dtype=np.int)
       
     output = output.transpose(1,2,0)
     output = np.asarray(np.argmax(output, axis=2), dtype=np.int)
@@ -64,13 +63,13 @@ def changeOutput(output):
 batch = torch.load(LOAD_FROM + str(args.index) + '.pth', map_location='cpu')
 image, label, size, name = batch
 size = size[0].numpy()
-
+gt = np.asarray(label[0].numpy()[:size[0],:size[1]], dtype=np.int)
 pred1 = torch.load('/root/VOC12_After_Deeplab_Test/prediction' + str(args.index) + '.pth', map_location='cpu')
 pred1 = changeOutput(pred1)
 pred2 = torch.load('/root/VOC12_After_Deeplab_Test/prediction' + str(args.index) + '.pth', map_location='cpu') #change to new one!!!
 pred2 = changeOutput(pred2)
 
-img = plt.imread('/root/VOCdevkit/VOC2012/JPEGImages' + str(batch[3]))
+img = plt.imread('/root/VOCdevkit/VOC2012/JPEGImages/' + str(batch[3][0]) + '.jpg')
 
 saveImage(gt, pred1, pred2, img)
 
