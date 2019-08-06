@@ -86,7 +86,7 @@ def compute(b11_path, b14_path, output_path, num_batches, batch_size, name_b11, 
                 b15[j,k] = b15[j,k].to(device)/den.to(device)  # divide every category's fmap by the denominator
 
         torch.save(b15, output_path + name_b14 + str(i) + ".pth")
-        if i==1: break
+        #if i==1: break
         print(i)
 
 
