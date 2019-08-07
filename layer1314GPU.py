@@ -159,8 +159,7 @@ if main_phase == 'not_eval':
                 train_loss_history.append(loss.data.cpu().numpy())
                 if i_iter % log_nth == 0:
                     last_log_nth = train_loss_history[-log_nth:]
-                    train_loss = np.mean(last_log_nth)
-                    print('train loss: %.3f' % train_loss)
+                    train_loss = np.mean(last_log_nth) / log_nth
 
 
         if phase == 'val':
@@ -174,8 +173,7 @@ if main_phase == 'not_eval':
                 val_loss_history.append(loss.data.cpu().numpy())
                 if i_iter % log_nth == 0:
                     last_log_nth = val_loss_history[-log_nth:]
-                    validation_loss = np.mean(last_log_nth)
-                    print('validation loss: %.3f' % validation_loss)
+                    validation_loss = np.mean(last_log_nth) / log_nth
 
             torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
 
