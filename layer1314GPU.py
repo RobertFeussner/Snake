@@ -146,9 +146,9 @@ if main_phase == 'not_eval':
             model.eval()  # Set model to evaluate mode
 
         if phase == 'train':
-            optimizer.zero_grad()
             log_nth = len(train_data) - 1
             for i_iter in range(len(train_data)):
+                optimizer.zero_grad()
                 pred = Variable(interp(train_data[i_iter])).cuda()
                 label = Variable(train_data_labels [i_iter])
                 output = interp(model(pred))
