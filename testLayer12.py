@@ -60,7 +60,8 @@ model.cuda()
 
 all_testdata = []
 
-for i in range(TEST_BATCHES):
+i = 11
+while i < TEST_BATCHES:
     testdata = torch.load("/root/VOC12_After_b12/TrainBatch3TensorsGPUTest/predictions" + str(i) + '.pth')
     testdata = testdata[0].unsqueeze(0)
     all_testdata.append(testdata)
@@ -89,7 +90,8 @@ def get_iou(data_list, class_num, save_path=None):
     print('meanIOU: ' + str(aveJ) + '\n')
 
 data_list = []
-for i_iter in range(TEST_BATCHES):
+i_iter = 11
+while i_iter < TEST_BATCHES:
     pred = Variable(interp(all_testdata[i_iter])).cuda()
     output = interp(model(pred))
 
