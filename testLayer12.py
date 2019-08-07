@@ -90,8 +90,7 @@ def get_iou(data_list, class_num, save_path=None):
     print('meanIOU: ' + str(aveJ) + '\n')
 
 data_list = []
-i_iter = 11
-while i_iter < TEST_BATCHES:
+for i_iter in range(len(all_testdata)):
     pred = Variable(interp(all_testdata[i_iter])).cuda()
     output = interp(model(pred))
 
