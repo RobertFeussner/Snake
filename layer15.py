@@ -50,9 +50,8 @@ def main():
             name_b11 = "/prediction", name_b14 = "/predictions")
 
 
-
 """
-this function has a lot of parameters:
+This function computes b15 from b11 and b14. The required parameters are:
     b11_path: path where b11 data for this computation comes from
     b14_path: path where b14 data for this computation comes from
     output_path: path where the output for this computation will be stored
@@ -62,14 +61,15 @@ this function has a lot of parameters:
     name_b14: the name which was used by Iulia to preceed the index of a batch of output data, e.g. prediction(s)
 """
 
+
 def compute(b11_path, b14_path, output_path, num_batches, batch_size, name_b11, name_b14):
 
     for i in range(num_batches):  # loop over all the batches
 
-        # both data sources are 3x21x321x321 (batch size x categories x downsampled image dimensions)
-        b11 = torch.load(b11_path + name_b11 + str(i) + ".pth")
+        # load data: both data sources are 3x21x321x321 (batch size x categories x downsampled image dimensions)
+        b11 = torch.nn.functional.softmax(torch.load(b11_path + name_b11 + str(i) + ".pth").to(device))
         #print(b11.size())
-        b14 = torch.load(b14_path + name_b14 + str(i) + ".pth")
+        b14 = torch.nn.functional.softmax(torch.load(b14_path + name_b14 + str(i) + ".pth").to(device))
         #print(b14.size())
         b15 = torch.zeros([3, 21, 321, 321])  # tensor to store output of this batch
 
@@ -91,7 +91,6 @@ def compute(b11_path, b14_path, output_path, num_batches, batch_size, name_b11, 
 
         torch.save(b15, output_path + name_b14 + str(i) + ".pth")
         #if i==1: break
-
 
 
 
