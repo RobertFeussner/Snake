@@ -25,7 +25,7 @@ unfold = F.unfold
 SIZE = 321
 DOWNSAMPLE_SIZE = 50
 NUM_CLASSES = 21
-TEST_BATCHES = 100 #1449
+TEST_BATCHES = 1449 #1449
 
 
 os.environ["CUDA_VISIBLE_DEVICES"]=str(0)
@@ -60,7 +60,7 @@ model.cuda()
 
 all_testdata = []
 
-i = 15
+i = 11
 while i < TEST_BATCHES:
     testdata = torch.load("/root/VOC12_After_b12/TrainBatch3TensorsGPUTest/predictions" + str(i) + '.pth')
     testdata = testdata[0].unsqueeze(0)
