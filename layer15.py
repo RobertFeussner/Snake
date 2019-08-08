@@ -60,8 +60,29 @@ This function computes b15 from b11 and b14. The required parameters are:
     name_b11: the name which was used by Robert to preceed the index of a batch of output data, e.g. prediction(s)
     name_b14: the name which was used by Iulia to preceed the index of a batch of output data, e.g. prediction(s)
 """
+sys.path.append('Pytorch-Deeplab') # needed for the next 2 lines
 
+from deeplab.model import Res_Deeplab
+from collections import OrderedDict
 
+def get_iou(data_list, class_num, save_path=None):
+    from multiprocessing import Pool
+    from deeplab.metric import ConfusionMatrix
+
+    ConfM = ConfusionMatrix(class_num)
+    f = ConfM.generateM
+    pool = Pool()
+    m_list = pool.map(f, data_list)
+    pool.close()
+    pool.join()
+
+    for m in m_list:
+        ConfM.addM(m)
+
+    aveJ, j_list, M = ConfM.jaccard()
+    print('meanIOU: ' + str(aveJ) + '\n')
+
+data_list = []
 def compute(b11_path, b14_path, output_path, num_batches, batch_size, name_b11, name_b14):
 
     for i in range(num_batches):  # loop over all the batches
@@ -81,18 +102,28 @@ def compute(b11_path, b14_path, output_path, num_batches, batch_size, name_b11, 
 
                 num = torch.exp(torch.log(fmap11)-fmap14)  # compute the numerator of Eqn. 15
 
-                print("difference")
-                print(torch.log(fmap11)-fmap14)
-
                 b15[j,k] = num  # store the numerator so that we can later divide by the denominator
                 den = den.to(device) + num.to(device)  # summing over all the categories to get den
             for k in range(21):
                 b15[j,k] = b15[j,k].to(device)/den.to(device)  # divide every category's fmap by the denominator
 
         torch.save(b15, output_path + name_b14 + str(i) + ".pth")
-        #if i==1: break
 
+        test_batch_b11 = torch.load("/root/VOC12_After_Deeplab_Test/batch" + str(i_iter) + '.pth')
+        image, label, size, name = test_batch_b11
+        size = size[0].numpy()
 
+        output = b15.cpu().data[0].numpy()
+
+        output = output[:, :size[0], :size[1]]
+        gt = np.asarray(label[0].numpy()[:size[0], :size[1]], dtype=np.int)
+
+        output = output.transpose(1, 2, 0)
+        output = np.asarray(np.argmax(output, axis=2), dtype=np.int)
+
+        data_list.append([gt.flatten(), output.flatten()])
+
+    get_iou(data_list, NUM_CLASSES)
 
 # a function used to test the code in main
 def test():
