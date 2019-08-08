@@ -125,11 +125,12 @@ if main_phase == 'not_eval':
             all_labels.append(label)
 
 if main_phase == 'eval':
-    for i in range(TEST_BATCHES):
+    i = 11
+    while i < TEST_BATCHES:
         testdata = torch.load("/root/VOC12_After_b12/TrainBatch3TensorsGPUTest/predictions" + str(i) + '.pth')
         testdata = testdata[0].unsqueeze(0)
         all_testdata.append(testdata)
-
+        i = i + 1
 
 index = int(0.8 * BATCHES * 3)
 train_data = all_predictions[:index]

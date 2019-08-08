@@ -65,6 +65,7 @@ while i < TEST_BATCHES:
     testdata = torch.load("/root/VOC12_After_b12/TrainBatch3TensorsGPUTest/predictions" + str(i) + '.pth')
     testdata = testdata[0].unsqueeze(0)
     all_testdata.append(testdata)
+    i = i + 1
 
 
 sys.path.append('Pytorch-Deeplab') # needed for the next 2 lines
