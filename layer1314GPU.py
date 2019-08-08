@@ -212,10 +212,10 @@ if main_phase == 'eval':
         #save test output in batch of 1
         pred = Variable(interp(all_testdata[i_iter])).cuda()
         output = interp(model(pred))
-        torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPUTest/predictions" + str(i_iter) + ".pth")
+        torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPUTest/predictions" + str(i_iter + 11) + ".pth")
 
         output = torch.nn.functional.softmax(output)
-        test_batch_b11 = torch.load("/root/VOC12_After_Deeplab_Test/batch" + str(i_iter) + '.pth')
+        test_batch_b11 = torch.load("/root/VOC12_After_Deeplab_Test/batch" + str(i_iter + 11) + '.pth')
         image, label, size, name = test_batch_b11
         size = size[0].numpy()
 
