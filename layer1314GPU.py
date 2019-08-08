@@ -28,7 +28,7 @@ PATHb12 = "/root/VOC12_After_b12/TrainBatch3TensorsGPU/predictions"
 PATHb11 = "/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/labels"
 BATCHES = 3525
 TEST_BATCHES = 1449
-LEARNING_RATE = 1.9e-4 #1.8e-4
+LEARNING_RATE = 1.9e-4
 BETAS = (0.9, 0.999)
 WEIGHT_DECAY = 0.0005
 IGNORE_LABEL = 255
@@ -83,10 +83,20 @@ def loss_rescale(predict, target, ignore_label):
     loss_final = F.cross_entropy(predict, target, size_average=SIZE)
     return loss_final
 
-#function to calculate the loss - difference between the prediction and the ground truth labels
 def loss_calc(prediction, target):
     target = Variable(target.long()).cuda()
     return loss_rescale(prediction, target, IGNORE_LABEL)
+
+
+def loss_calc_new(pred, label):
+    """
+    This function returns cross entropy loss for semantic segmentation
+    """
+    # out shape batch_size x channels x h x w -> batch_size x channels x h x w
+    # label shape h x w x 1 x batch_size  -> batch_size x 1 x h x w
+    label = Variable(label.long()).cuda()
+    criterion = torch.nn.CrossEntropyLoss(ignore_index=IGNORE_LABEL).cuda()
+    return criterion(pred, label)
 
 interp = nn.Upsample(size=(SIZE,SIZE), mode='bilinear', align_corners=True)
 
@@ -94,7 +104,6 @@ all_predictions = []
 all_labels = []
 all_testdata = []
 
-main_phase = 'eval'
 
 for i in range(BATCHES):
     #load results from b12
@@ -133,9 +142,8 @@ model.cuda()
 # Adam optimizer
 optimizer = optim.Adam([model.conv1.weight], lr=args.learning_rate, betas=args.betas, eps=1e-08, weight_decay=args.weight_decay, amsgrad=False)
 
-train_loss_history = []
-val_loss_history = []
-
+main_phase = 'not_eval'
+log_nth = 100
 
 #train & save model
 if main_phase == 'not_eval':
@@ -146,39 +154,30 @@ if main_phase == 'not_eval':
             model.eval()  # Set model to evaluate mode
 
         if phase == 'train':
-            optimizer.zero_grad()
-            log_nth = len(train_data) - 1
             for i_iter in range(len(train_data)):
+                optimizer.zero_grad()
                 pred = Variable(interp(train_data[i_iter])).cuda()
                 label = Variable(train_data_labels [i_iter])
                 output = interp(model(pred))
-                loss = loss_calc(output, label)
+                loss = loss_calc_new(output, label)
                 loss.backward()
                 optimizer.step()
-
-                train_loss_history.append(loss.data.cpu().numpy())
                 if i_iter % log_nth == 0:
-                    last_log_nth = train_loss_history[-log_nth:]
-                    train_loss = np.mean(last_log_nth)
-                    print('train loss: %.3f' % train_loss)
+                    print(str(i_iter) + ',' + str(loss.data.cpu().numpy()))
 
 
         if phase == 'val':
-            log_nth = len(val_data) - 1
             for i_iter in range(len(val_data)):
                 pred = Variable(interp(val_data[i_iter])).cuda()
                 label = Variable(val_data_labels[i_iter])
                 output = interp(model(pred))
-                loss = loss_calc(output, label)
-
-                val_loss_history.append(loss.data.cpu().numpy())
+                loss = loss_calc_new(output, label)
                 if i_iter % log_nth == 0:
-                    last_log_nth = val_loss_history[-log_nth:]
-                    validation_loss = np.mean(last_log_nth)
-                    print('validation loss: %.3f' % validation_loss)
+                    print(str(i_iter) + ',' + str(loss.data.cpu().numpy()))
 
             torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
 
+main_phase = 'eval'
 
 sys.path.append('Pytorch-Deeplab') # needed for the next 2 lines
 
