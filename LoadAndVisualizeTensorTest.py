@@ -51,6 +51,7 @@ def saveImage(gt, pred1, pred2, img):
     ax4.axis('off')
 
     fig.savefig('TestImages/TestImage' + str(args.index))
+    fig.show()
 
 def changeOutput(output):
     output = output.data[0].cpu().numpy()
