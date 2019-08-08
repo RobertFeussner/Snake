@@ -88,7 +88,7 @@ def compute(b11_path, b14_path, output_path, num_batches, batch_size, name_b11, 
     for i in range(num_batches):  # loop over all the batches
 
         print (i)
-        
+
         # load data: both data sources are 3x21x321x321 (batch size x categories x downsampled image dimensions)
         b11 = torch.nn.functional.softmax(torch.load(b11_path + name_b11 + str(i) + ".pth").to(device))
         #print(b11.size())

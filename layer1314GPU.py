@@ -104,28 +104,31 @@ all_predictions = []
 all_labels = []
 all_testdata = []
 
+main_phase = 'eval'
 
-for i in range(BATCHES):
-    #load results from b12
-    predictions = torch.load(PATHb12 + str(i)+ '.pth') # b12 3 predictions
-    predictions = predictions.float()
+if main_phase == 'not_eval':
+    for i in range(BATCHES):
+        #load results from b12
+        predictions = torch.load(PATHb12 + str(i)+ '.pth') # b12 3 predictions
+        predictions = predictions.float()
 
-    #load labels = ground truth
-    labels = torch.load(PATHb11 + str(i) + '.pth')
-    labels = labels.float()
+        #load labels = ground truth
+        labels = torch.load(PATHb11 + str(i) + '.pth')
+        labels = labels.float()
 
 
-    for j in range(3):
-        prediction = predictions[j].unsqueeze(0)
-        all_predictions.append(prediction)
+        for j in range(3):
+            prediction = predictions[j].unsqueeze(0)
+            all_predictions.append(prediction)
 
-        label = labels[j].unsqueeze(0)
-        all_labels.append(label)
+            label = labels[j].unsqueeze(0)
+            all_labels.append(label)
 
-for i in range(TEST_BATCHES):
-    testdata = torch.load("/root/VOC12_After_b12/TrainBatch3TensorsGPUTest/predictions" + str(i) + '.pth')
-    testdata = testdata[0].unsqueeze(0)
-    all_testdata.append(testdata)
+if main_phase == 'eval':
+    for i in range(TEST_BATCHES):
+        testdata = torch.load("/root/VOC12_After_b12/TrainBatch3TensorsGPUTest/predictions" + str(i) + '.pth')
+        testdata = testdata[0].unsqueeze(0)
+        all_testdata.append(testdata)
 
 
 index = int(0.8 * BATCHES * 3)
@@ -142,7 +145,7 @@ model.cuda()
 # Adam optimizer
 optimizer = optim.Adam([model.conv1.weight], lr=args.learning_rate, betas=args.betas, eps=1e-08, weight_decay=args.weight_decay, amsgrad=False)
 
-main_phase = 'not_eval'
+
 log_nth = 100
 
 #train & save model
@@ -177,7 +180,6 @@ if main_phase == 'not_eval':
 
             torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
 
-main_phase = 'eval'
 
 sys.path.append('Pytorch-Deeplab') # needed for the next 2 lines
 
@@ -211,6 +213,7 @@ if main_phase == 'eval':
         output = interp(model(pred))
         torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPUTest/predictions" + str(i_iter) + ".pth")
 
+        output = torch.nn.functional.softmax(output)
         test_batch_b11 = torch.load("/root/VOC12_After_Deeplab_Test/batch" + str(i_iter) + '.pth')
         image, label, size, name = test_batch_b11
         size = size[0].numpy()
