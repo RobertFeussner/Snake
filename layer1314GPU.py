@@ -161,8 +161,8 @@ if main_phase == 'not_eval':
                 optimizer.zero_grad()
                 pred = Variable(interp(train_data[i_iter])).cuda()
                 label = Variable(train_data_labels [i_iter])
-                output = model(pred) #interp here
-                loss = loss_calc_new(output, label)
+                output = interp(model(pred))
+                loss = loss_calc(output, label)
                 loss.backward()
                 optimizer.step()
                 if i_iter % log_nth == 0:
@@ -173,8 +173,8 @@ if main_phase == 'not_eval':
             for i_iter in range(len(val_data)):
                 pred = Variable(interp(val_data[i_iter])).cuda()
                 label = Variable(val_data_labels[i_iter])
-                output = model(pred)
-                loss = loss_calc_new(output, label)
+                output = interp(model(pred))
+                loss = loss_calc(output, label)
                 if i_iter % log_nth == 0:
                     print(str(i_iter) + ',' + str(loss.data.cpu().numpy()))
 
