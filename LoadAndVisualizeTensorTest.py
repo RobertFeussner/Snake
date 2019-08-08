@@ -53,7 +53,7 @@ def saveImage(gt, pred1, pred2, img):
     fig.savefig('TestImages/TestImage' + str(args.index))
 
 def changeOutput(output):
-    output = output.data[0].numpy()
+    output = output.data[0].cpu().numpy()
     output = output[:,:size[0],:size[1]]
       
     output = output.transpose(1,2,0)
