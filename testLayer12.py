@@ -95,11 +95,13 @@ for i_iter in range(len(all_testdata)):
     print(i_iter)
 
     pred = Variable(interp(all_testdata[i_iter])).cuda()
-    output = model(pred)
+    output = interp(model(pred))
 
     test_batch_b11 = torch.load("/root/VOC12_After_Deeplab_Test/batch" + str(i_iter) + '.pth')
     image, label, size, name = test_batch_b11
     size = size[0].numpy()
+
+    output = torch.nn.functional.softmax(output)
 
     output = output.cpu().data[0].numpy()
 
