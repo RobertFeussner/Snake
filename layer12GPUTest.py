@@ -24,9 +24,10 @@ DOWNSAMPLE_SIZE = 50
 FILTERSIZE = 5
 STRIDE = 1
 PATH = '/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU'
-BATCHES = 3525
+BATCHES = 1449
 COLOR_WEIGHT = 0.5
 SPATIAL_WEIGHT = 0.5
+FILTER_STRIDE = 2
 
 # In[11]:
 
@@ -199,8 +200,8 @@ def initializeFilters(image):
     middle = math.floor(filterHeight/2)
     for imageY in range(0, imageHeight, STRIDE):
         for imageX in range(0, imageWidth, STRIDE):
-            for y in range(0, filterHeight, 2):
-                for x in range(0, filterWidth, 2):
+            for y in range(0, filterHeight, FILTER_STRIDE):
+                for x in range(0, filterWidth, FILTER_STRIDE):
                     if not ((imageX + (x-middle)) < 0 or (imageX + x) > imageWidth or (imageY + (y-middle)) < 0 or (imageY + y) > imageHeight):
                         #print("test")
                         filters[imageY][imageX][y][x] = calcDistance(image[0][imageY][imageX], 
@@ -223,32 +224,34 @@ net.to("cuda:0")
 net.eval()
 
 for i in range(BATCHES):
-    images = torch.load('/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/images' + str(i)+ '.pth')	# the 3 original images
+    images = torch.load('/root/VOC12_After_Deeplab_Test/batch' + str(i)+ '.pth')# the 3 original images
+    images = images[0]
     images = images.float()
     images = torch.nn.functional.interpolate(images, size=(DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE), mode="bilinear")
     images = images.cuda()
 
-    predictions = torch.load('/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/predictions' + str(i)+ '.pth') # b11 3 predictions
+    predictions = torch.load('/root/VOC12_After_Deeplab_Test/prediction' + str(i)+ '.pth') # b11 3 predictions
     predictions = predictions.float()
     predictions = torch.nn.functional.interpolate(predictions, size=(DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE), mode="bilinear")
     predictions = predictions.cuda()
 
     outputs = []
 
-    for j in range(3):
+    for j in range(1):
         image = images[j] # iterate every picture directly
         prediction = predictions[j]
         filters = initializeFilters(image)
         filters.unsqueeze_(-3)
         filters.unsqueeze_(-3)
         filters = filters.expand(DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE, 21, 21, FILTERSIZE, FILTERSIZE)
+        print(filters.size())
         net.conv1.weight = torch.nn.Parameter(filters)
         input = prediction.unsqueeze(0)
         #print(input.size())
 
         outputs.append(net(input))
 
-    output = torch.cat((outputs[0], outputs[1], outputs[2]), 0)
+    output = outputs[0]
     torch.save(output, "/root/VOC12_After_b12/TrainBatch3TensorsGPU/predictions"+ str(i)+".pth")
     print(i)    
 
