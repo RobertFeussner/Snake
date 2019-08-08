@@ -97,7 +97,7 @@ for i_iter in range(len(all_testdata)):
     pred = Variable(interp(all_testdata[i_iter])).cuda()
     output = interp(model(pred))
 
-    test_batch_b11 = torch.load("/root/VOC12_After_Deeplab_Test/batch" + str(i_iter) + '.pth')
+    test_batch_b11 = torch.load("/root/VOC12_After_Deeplab_Test/batch" + str(i_iter + 11) + '.pth')
     image, label, size, name = test_batch_b11
     size = size[0].numpy()
 

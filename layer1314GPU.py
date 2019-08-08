@@ -208,7 +208,7 @@ def get_iou(data_list, class_num, save_path=None):
 data_list = []
 if main_phase == 'eval':
     model = torch.load("/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
-    for i_iter in range(TEST_BATCHES):
+    for i_iter in range(len(all_testdata)):
         #save test output in batch of 1
         pred = Variable(interp(all_testdata[i_iter])).cuda()
         output = interp(model(pred))
