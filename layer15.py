@@ -92,6 +92,7 @@ def compute(b11_path, b14_path, output_path, num_batches, batch_size, name_b11, 
         # load data: both data sources are 3x21x321x321 (batch size x categories x downsampled image dimensions)
         b11 = torch.nn.functional.softmax(torch.load(b11_path + name_b11 + str(i) + ".pth").to(device))
         #print(b11.size())
+        #b14 = torch.nn.functional.softmax(torch.load(b14_path + name_b14 + str(i) + ".pth").to(device))
         b14 = torch.nn.functional.softmax(torch.load(b14_path + name_b14 + str(i) + ".pth").to(device))
         #print(b14.size())
         b15 = torch.zeros([3, 21, 321, 321])  # tensor to store output of this batch
