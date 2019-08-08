@@ -104,7 +104,7 @@ all_predictions = []
 all_labels = []
 all_testdata = []
 
-main_phase = 'eval'
+main_phase = 'not_eval'
 
 if main_phase == 'not_eval':
     for i in range(BATCHES):
@@ -124,13 +124,12 @@ if main_phase == 'not_eval':
             label = labels[j].unsqueeze(0)
             all_labels.append(label)
 
-if main_phase == 'eval':
-    i = 11
-    while i < TEST_BATCHES:
-        testdata = torch.load("/root/VOC12_After_b12/TrainBatch3TensorsGPUTest/predictions" + str(i) + '.pth')
-        testdata = testdata[0].unsqueeze(0)
-        all_testdata.append(testdata)
-        i = i + 1
+i = 11
+while i < TEST_BATCHES:
+    testdata = torch.load("/root/VOC12_After_b12/TrainBatch3TensorsGPUTest/predictions" + str(i) + '.pth')
+    testdata = testdata[0].unsqueeze(0)
+    all_testdata.append(testdata)
+    i = i + 1
 
 index = int(0.8 * BATCHES * 3)
 train_data = all_predictions[:index]
@@ -162,7 +161,7 @@ if main_phase == 'not_eval':
                 optimizer.zero_grad()
                 pred = Variable(interp(train_data[i_iter])).cuda()
                 label = Variable(train_data_labels [i_iter])
-                output = interp(model(pred))
+                output = model(pred) #interp here
                 loss = loss_calc_new(output, label)
                 loss.backward()
                 optimizer.step()
@@ -174,7 +173,7 @@ if main_phase == 'not_eval':
             for i_iter in range(len(val_data)):
                 pred = Variable(interp(val_data[i_iter])).cuda()
                 label = Variable(val_data_labels[i_iter])
-                output = interp(model(pred))
+                output = model(pred)
                 loss = loss_calc_new(output, label)
                 if i_iter % log_nth == 0:
                     print(str(i_iter) + ',' + str(loss.data.cpu().numpy()))
@@ -204,6 +203,7 @@ def get_iou(data_list, class_num, save_path=None):
     aveJ, j_list, M = ConfM.jaccard()
     print('meanIOU: ' + str(aveJ) + '\n')
 
+main_phase = 'eval'
 
 data_list = []
 if main_phase == 'eval':
