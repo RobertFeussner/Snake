@@ -109,7 +109,7 @@ def compute(b11_path, b14_path, output_path, num_batches, batch_size, name_b11, 
 
         torch.save(b15, output_path + name_b14 + str(i) + ".pth")
 
-        test_batch_b11 = torch.load("/root/VOC12_After_Deeplab_Test/batch" + str(i_iter) + '.pth')
+        test_batch_b11 = torch.load("/root/VOC12_After_Deeplab_Test/batch" + str(i) + '.pth')
         image, label, size, name = test_batch_b11
         size = size[0].numpy()
 
