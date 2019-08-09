@@ -35,6 +35,18 @@ Similiar to the DataGeneratorb11, this script loads the test images, passes them
 python TestDataGeneratorb11.py
 ```
 
+### Layer 12 (b12)
+
+There are two separate files layer12GPU.py (which is used to process the training data) and layer12GPUTest.py (which is used to process the test data). The main difference is only that we used different paths and batch sizes for our training and test data. If you want to run your own data through this layer, make sure all the paths are adapted within the file. The file can just be run via
+
+```
+python layer12GPU.py
+```
+or
+```
+python layer12GPUTest.py
+```
+
 ### Demo
 
 The script _Demo.py_ offers a simple terminal based way to segment single images without postprocessing. By passing it the required arguments, you can simply segment images that are new to the model. It uses the Pytorch Deeplab V2 model. An example use case would be a Snake robot locating and classifing objects. If the you have the same path to your state dictonary as the default and an image, for example __sheep.jpg__ in the same folder, you can simply run the following which saves the segmented image under __sheep.png__.
@@ -118,7 +130,7 @@ We use [Github](https://github.com/) for versioning our project.
 ## Authors
 
 * __Feussner, Robert__ - _Providing/Adapting the Deeplab models, creating the Demo scripts, Generating the b11 data, Visualizing the results_
-* __Haller von Hallerstein, Patrick__ - _Write your stuff here_
+* __Haller von Hallerstein, Patrick__ - _Creating b12, coding the custom filter initialization for b12, generating the data of b12_
 * __Mustea, Iulia-Otilia__ - _Write your stuff here_
 * __Peisker, Tim__ - _Write your stuff here_
 
