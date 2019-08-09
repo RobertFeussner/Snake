@@ -23,10 +23,10 @@ SIZE = 321
 DOWNSAMPLE_SIZE = 50
 FILTERSIZE = 5
 STRIDE = 1
-PATH = '/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU'
 BATCHES = 3525
 COLOR_WEIGHT = 0.5
 SPATIAL_WEIGHT = 0.5
+BATCH_SIZE = 3
 
 # In[11]:
 
@@ -235,7 +235,7 @@ for i in range(BATCHES):
 
     outputs = []
 
-    for j in range(3):
+    for j in range(BATCH_SIZE):
         image = images[j] # iterate every picture directly
         prediction = predictions[j]
         filters = initializeFilters(image)
@@ -244,7 +244,6 @@ for i in range(BATCHES):
         filters = filters.expand(DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE, 21, 21, FILTERSIZE, FILTERSIZE)
         net.conv1.weight = torch.nn.Parameter(filters)
         input = prediction.unsqueeze(0)
-        #print(input.size())
 
         outputs.append(net(input))
 
@@ -253,29 +252,3 @@ for i in range(BATCHES):
     print(i)    
 
 print("finished")
-#images = loadImages()
-#images = images.float()
-#images = torch.nn.functional.interpolate(images, size=(DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE), mode="bilinear")
-#images = images.cuda()
-
-#filters = initializeFilters(images)
-#filters.unsqueeze_(-3)
-#filters.unsqueeze_(-3)
-#filters = filters.expand(DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE, 21, 21, FILTERSIZE, FILTERSIZE)
-
-
-# In[28]:
-
-
-#net = Net()
-#net.to("cuda:0")
-#net.conv1.weight = torch.nn.Parameter(filters)
-#net.eval()
-
-# In[30]:
-
-
-#input = torch.ones(3, 21, DOWNSAMPLE_SIZE, DOWNSAMPLE_SIZE)
-
-
-#out = net(input)

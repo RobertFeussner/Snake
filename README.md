@@ -37,7 +37,7 @@ python TestDataGeneratorb11.py
 
 ### Layer 12 (b12)
 
-There are two separate files layer12GPU.py (which is used to process the training data) and layer12GPUTest.py (which is used to process the test data). The main difference is only that we used different paths and batch sizes for our training and test data. If you want to run your own data through this layer, make sure all the paths are adapted within the file. The file can just be run via
+There are two separate files layer12GPU.py (which is used to process the training data) and layer12GPUTest.py (which is used to process the test data). The main difference is only that we used different paths and batch sizes for our training and test data. If you want to run your own data through this layer, make sure all the paths are adapted within the file. The file automatically takes the input images and predictions, calculates the its own custom filters and uses them in the convolution operation. There are also some hyperparameters that can be adapted at the top of the file. The file can just be run via
 
 ```
 python layer12GPU.py
