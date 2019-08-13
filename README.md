@@ -47,6 +47,11 @@ or
 python layer12GPUTest.py
 ```
 
+### layer15
+```
+python layer15.py
+```
+
 ### Demo
 
 The script _Demo.py_ offers a simple terminal based way to segment single images without postprocessing. By passing it the required arguments, you can simply segment images that are new to the model. It uses the Pytorch Deeplab V2 model. An example use case would be a Snake robot locating and classifing objects. If the you have the same path to your state dictonary as the default and an image, for example __sheep.jpg__ in the same folder, you can simply run the following which saves the segmented image under __sheep.png__.
