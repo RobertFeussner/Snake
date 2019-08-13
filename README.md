@@ -48,6 +48,7 @@ python layer12GPUTest.py
 ```
 
 ### layer15
+This script takes data from layer14 and computes the corresponding output for layer 15 and mIoU. To adapt which data to take in or where to save the output data, simply adapt the file paths within the script. For the training and testing data sets these parameters are already provided (at the time of submission, training is commented out and testing is not). Further explanations can be found in the detailed commments within the script. Finally, to run the script navigate to the Snake directory and run the following command
 ```
 python layer15.py
 ```
