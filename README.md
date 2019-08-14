@@ -48,7 +48,7 @@ python layer12GPUTest.py
 ```
 ### Layers 13-14 (b13-14)
 
-This file contains the implementation of layer13-14, which constains the architecture of the layer, the training, validation and the evaluation of layers. The main_phase variable, which can be 'eval' or 'not_eval', sets the run to use the training/validation or the evaluation of the model on the test data. The file can be run via
+This file contains the implementation of layer13-14, which constains the architecture of the layer, the training, validation and the evaluation of layers. The main_phase variable, which can be 'eval' or 'not_eval', sets the run to use the training/validation or the evaluation of the model on the test data. The hyperparameters and the data loaded are the ones which got the best performance. The file can be run via
 
 ```
 python layer1314GPU.py
@@ -144,8 +144,8 @@ We use [Github](https://github.com/) for versioning our project.
 
 * __Feussner, Robert__ - _Providing/Adapting the Deeplab models, creating the Demo scripts, Generating the b11 data, Visualizing the results_
 * __Haller von Hallerstein, Patrick__ - _Creating b12, coding the custom filter initialization for b12, generating the data of b12_
-* __Mustea, Iulia-Otilia__ - Creating b13-b14, generating data of b14, hyper-parameter tuning for b13-b14, evaluating results for b14 and b15
-* __Peisker, Tim__ - Creating b15, computation module of b15, testing of b15
+* __Mustea, Iulia-Otilia__ - _Creating b13-b14, generating data of b14, hyper-parameter tuning for b13-b14, evaluating results for b14 and b15
+* __Peisker, Tim__ - _Creating b15, computation module of b15, testing of b15
 
 
 
