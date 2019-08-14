@@ -144,7 +144,7 @@ We use [Github](https://github.com/) for versioning our project.
 
 * __Feussner, Robert__ - _Providing/Adapting the Deeplab models, creating the Demo scripts, Generating the b11 data, Visualizing the results_
 * __Haller von Hallerstein, Patrick__ - _Creating b12, coding the custom filter initialization for b12, generating the data of b12_
-* __Mustea, Iulia-Otilia__ - Creating b13-b14, generating data of b14, hyper-parameter tuning for b13-b14, evaluating results for b14 and b15_
+* __Mustea, Iulia-Otilia__ - _Creating b13-b14, generating data of b14, hyper-parameter tuning for b13-b14, evaluating results for b14 and b15_
 * __Peisker, Tim__ - _Creating b15, computation module of b15, testing of b15_
 
 
