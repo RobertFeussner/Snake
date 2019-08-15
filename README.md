@@ -12,6 +12,8 @@ In this section we explain our code and the code we used from other sources and 
 This folder contains a Github [Deeplab V2](https://github.com/speedinghzl/Pytorch-Deeplab) implementation based on the ResNet101. As it is written in Python 2, whereas we used Python 3, which is not backwards compatible, we had to change it a little. Also, we have done some adaptations to fit our project better.
 We used this to train our Deeplab V2 model and do our evaluations on it. We got a final accuracy of around 73% on the test set, similiar to the result they have in their project.
 Please make sure, that you need to download all the files  mentioned on their project site, as they are required for it to work and cannot be downloaded by git directly (files too big).
+#### Plot Accuracy
+For plotting the accuracay that was saved in log files using nohup, additionally the script __plotLossAndAccuracy.py__ was written. Using matplotlib, it visualizes the decrease of the loss as well as a slight increase of the accuracy during training.
 
 ### DataGeneratorb11
 
