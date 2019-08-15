@@ -115,12 +115,10 @@ if main_phase == 'not_eval':
             all_labels.append(label)
 
 #in case of having the first 10 files of b12 testdata corrupted, i=11. In case not, i=0
-i = 0
-while i < TEST_BATCHES:
+for i in range(TEST_BATCHES):
     testdata = torch.load("/root/VOC12_After_b12/TrainBatch3TensorsGPUTest/predictions" + str(i) + '.pth')
     testdata = testdata[0].unsqueeze(0)
     all_testdata.append(testdata)
-    i = i + 1
 
 index = int(0.8 * BATCHES * 3)
 train_data = all_predictions[:index]
@@ -168,7 +166,7 @@ if main_phase == 'not_eval':
                 if i_iter % log_nth == 0:
                     print(str(i_iter) + ':' + str(loss.data.cpu().numpy()))
 
-            torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPUSpatial/big_lr/model")
+            #torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPUSpatial/big_lr/model")
 
 
 #evaluation part - evaluate the saved model for layer13-14 on the testdata
