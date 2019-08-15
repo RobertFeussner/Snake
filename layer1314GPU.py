@@ -115,10 +115,12 @@ if main_phase == 'not_eval':
             all_labels.append(label)
 
 #in case of having the first 10 files of b12 testdata corrupted, i=11. In case not, i=0
-for i in range(TEST_BATCHES):
+i = 0
+while i < TEST_BATCHES:
     testdata = torch.load("/root/VOC12_After_b12/TrainBatch3TensorsGPUTest/predictions" + str(i) + '.pth')
     testdata = testdata[0].unsqueeze(0)
     all_testdata.append(testdata)
+    i = i + 1
 
 index = int(0.8 * BATCHES * 3)
 train_data = all_predictions[:index]
