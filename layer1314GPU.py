@@ -115,7 +115,7 @@ if main_phase == 'not_eval':
             all_labels.append(label)
 
 #in case of having the first 10 files of b12 testdata corrupted, i=11. In case not, i=0
-i = 11
+i = 0
 while i < TEST_BATCHES:
     testdata = torch.load("/root/VOC12_After_b12/TrainBatch3TensorsGPUTest/predictions" + str(i) + '.pth')
     testdata = testdata[0].unsqueeze(0)
@@ -204,9 +204,9 @@ if main_phase == 'eval':
 
         pred = Variable(interp(all_testdata[i_iter])).cuda()
         output = interp(model(pred))
-        torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPUTest/predictions" + str(i_iter + 11) + ".pth")
+        torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPUTest/predictions" + str(i_iter) + ".pth")
 
-        test_batch_b11 = torch.load("/root/VOC12_After_Deeplab_Test/batch" + str(i_iter + 11) + '.pth')
+        test_batch_b11 = torch.load("/root/VOC12_After_Deeplab_Test/batch" + str(i_iter) + '.pth')
         image, label, size, name = test_batch_b11
         size = size[0].numpy()
 
