@@ -50,7 +50,11 @@ python layer12GPUTest.py
 ```
 ### Layers 13-14 (b13-14)
 
-This file contains the implementation of layer13-14, which constains the architecture of the layer, the training, validation and the evaluation of layers. The main_phase variable, which can be 'eval' or 'not_eval', sets the run to use the training/validation or the evaluation of the model on the test data. The hyperparameters and the data loaded are the ones which got the best performance. The file can be run via
+This file contains the implementation of layer13-14, which contains the architecture of the layer, the training, validation and the evaluation of layers. The main_phase variable, which can be 'eval' or 'not_eval', sets the run to use the training/validation or the evaluation of the model on the test data. The hyperparameters and the data loaded are the ones which got the best performance. Due to the fact that the first 10 prediction files from b12 test data and the predictions files of b12 with 50-50% are corrupted, for the training part, I loaded the GPUSpatial (90 spatial - 10 colour), in order to visualize the training/validation loss decrease and the testdata starts with the 11th output of b12. When developing and saving my model, I didn't have this issue, but I made this changes to be able to run all the code now without any erros.
+Also, for the training, although we have more than 2000 batches, we had to delete some of them on the server in order to have space, so again, the parameters have changed for the'optimal' run.
+The model used for the evaluation is the one which got the results of 0.039%.
+The file is set on the evaluation mode for the best result model.
+The file can be run via
 
 ```
 python layer1314GPU.py
