@@ -28,7 +28,7 @@ PATHb12 = "/root/VOC12_After_b12/TrainBatch3TensorsGPUSpatial/predictions"
 PATHb11 = "/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/labels"
 BATCHES = 2000 #3525
 TEST_BATCHES = 1449
-LEARNING_RATE = 1.9e-4
+LEARNING_RATE = 1.9e-4 #1.8e-4
 BETAS = (0.9, 0.999)
 WEIGHT_DECAY = 0.0005
 IGNORE_LABEL = 255
@@ -88,16 +88,6 @@ def loss_calc(prediction, target):
     target = Variable(target.long()).cuda()
     return loss_rescale(prediction, target, IGNORE_LABEL)
 
-
-def loss_calc_new(pred, label):
-    """
-    This function returns cross entropy loss for semantic segmentation
-    """
-    # out shape batch_size x channels x h x w -> batch_size x channels x h x w
-    # label shape h x w x 1 x batch_size  -> batch_size x 1 x h x w
-    label = Variable(label.long()).cuda()
-    criterion = torch.nn.CrossEntropyLoss(ignore_index=IGNORE_LABEL).cuda()
-    return criterion(pred, label)
 
 interp = nn.Upsample(size=(SIZE,SIZE), mode='bilinear', align_corners=True)
 
@@ -165,7 +155,7 @@ if main_phase == 'not_eval':
                 pred = Variable(interp(train_data[i_iter])).cuda()
                 label = Variable(train_data_labels [i_iter])
                 output = interp(model(pred))
-                loss = loss_calc(torch.nn.functional.softmax(output), torch.nn.functional.softmax(label))
+                loss = loss_calc(torch.nn.functional.softmax(output), label)
                 loss.backward()
                 optimizer.step()
                 if i_iter % log_nth == 0:
@@ -177,7 +167,7 @@ if main_phase == 'not_eval':
                 pred = Variable(interp(val_data[i_iter])).cuda()
                 label = Variable(val_data_labels[i_iter])
                 output = interp(model(pred))
-                loss = loss_calc(torch.nn.functional.softmax(output), torch.nn.functional.softmax(label))
+                loss = loss_calc(torch.nn.functional.softmax(output), label)
                 if i_iter % log_nth == 0:
                     print(str(i_iter) + ':' + str(loss.data.cpu().numpy()))
 
