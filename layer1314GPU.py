@@ -24,7 +24,7 @@ import timeit
 unfold = F.unfold
 SIZE = 321
 DOWNSAMPLE_SIZE = 50
-PATHb12 = "/root/VOC12_After_b12/TrainBatch3TensorsGPU/predictions"
+PATHb12 = "/root/VOC12_After_b12/TrainBatch3TensorsGPUSpatial/predictions"
 PATHb11 = "/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/labels"
 BATCHES = 3525
 TEST_BATCHES = 1449
@@ -162,7 +162,7 @@ if main_phase == 'not_eval':
                 pred = Variable(interp(train_data[i_iter])).cuda()
                 label = Variable(train_data_labels [i_iter])
                 output = interp(model(pred))
-                loss = loss_calc(output, label)
+                loss = loss_calc_new(output, label)
                 loss.backward()
                 optimizer.step()
                 if i_iter % log_nth == 0:
@@ -174,11 +174,11 @@ if main_phase == 'not_eval':
                 pred = Variable(interp(val_data[i_iter])).cuda()
                 label = Variable(val_data_labels[i_iter])
                 output = interp(model(pred))
-                loss = loss_calc(output, label)
+                loss = loss_calc_new(output, label)
                 if i_iter % log_nth == 0:
                     print(str(i_iter) + ',' + str(loss.data.cpu().numpy()))
 
-            torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
+            #torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
 
 
 sys.path.append('Pytorch-Deeplab') # needed for the next 2 lines
@@ -204,15 +204,14 @@ def get_iou(data_list, class_num, save_path=None):
     print('meanIOU: ' + str(aveJ) + '\n')
 
 main_phase = 'eval'
-
 data_list = []
 if main_phase == 'eval':
-    model = torch.load("/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
+    #model = torch.load("/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
     for i_iter in range(len(all_testdata)):
         #save test output in batch of 1
         pred = Variable(interp(all_testdata[i_iter])).cuda()
         output = interp(model(pred))
-        torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPUTest/predictions" + str(i_iter + 11) + ".pth")
+        #torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPUTest/predictions" + str(i_iter + 11) + ".pth")
 
         output = torch.nn.functional.softmax(output)
         test_batch_b11 = torch.load("/root/VOC12_After_Deeplab_Test/batch" + str(i_iter + 11) + '.pth')
