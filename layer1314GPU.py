@@ -51,6 +51,7 @@ os.environ["CUDA_VISIBLE_DEVICES"]=str(0)
 cudnn.enabled = True
 cudnn.benchmark = True
 
+#definition of the architecture of layers13-14
 class Net(nn.Module):
 
     def __init__(self):
@@ -164,11 +165,11 @@ if main_phase == 'not_eval':
                 pred = Variable(interp(train_data[i_iter])).cuda()
                 label = Variable(train_data_labels [i_iter])
                 output = interp(model(pred))
-                loss = loss_calc_new(output, label)
+                loss = loss_calc(torch.nn.functional.softmax(output), torch.nn.functional.softmax(label))
                 loss.backward()
                 optimizer.step()
                 if i_iter % log_nth == 0:
-                    print(str(i_iter) + ',' + str(loss.data.cpu().numpy()))
+                    print(str(i_iter) + ':' + str(loss.data.cpu().numpy()))
 
 
         if phase == 'val':
@@ -176,9 +177,9 @@ if main_phase == 'not_eval':
                 pred = Variable(interp(val_data[i_iter])).cuda()
                 label = Variable(val_data_labels[i_iter])
                 output = interp(model(pred))
-                loss = loss_calc_new(output, label)
+                loss = loss_calc(torch.nn.functional.softmax(output), torch.nn.functional.softmax(label))
                 if i_iter % log_nth == 0:
-                    print(str(i_iter) + ',' + str(loss.data.cpu().numpy()))
+                    print(str(i_iter) + ':' + str(loss.data.cpu().numpy()))
 
             #torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
 
