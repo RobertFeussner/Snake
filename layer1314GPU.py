@@ -24,9 +24,7 @@ import timeit
 unfold = F.unfold
 SIZE = 321
 DOWNSAMPLE_SIZE = 50
-PATHb12 = "/root/VOC12_After_b12/TrainBatch3TensorsGPU/predictions"
-PATHb11 = "/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/labels"
-BATCHES = 2000 #3525
+BATCHES = 2000 #3525 for full batches number
 TEST_BATCHES = 1449
 LEARNING_RATE = 1.8e-4
 BETAS = (0.9, 0.999)
@@ -95,17 +93,17 @@ all_predictions = []
 all_labels = []
 all_testdata = []
 
-main_phase = 'not_eval'
+main_phase = 'eval'
 
 #importing data
 if main_phase == 'not_eval':
     for i in range(BATCHES):
         #load results from b12
-        predictions = torch.load(PATHb12 + str(i)+ '.pth') # b12 3 predictions
+        predictions = torch.load("/root/VOC12_After_b12/TrainBatch3TensorsGPUSpatial/predictions" + str(i)+ '.pth') # b12 output
         predictions = predictions.float()
 
         #load labels = ground truth
-        labels = torch.load(PATHb11 + str(i) + '.pth')
+        labels = torch.load("/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/labels" + str(i) + '.pth') #b11 output
         labels = labels.float()
 
 
@@ -137,7 +135,6 @@ model.cuda()
 
 # Adam optimizer
 optimizer = optim.Adam([model.conv1.weight], lr=args.learning_rate, betas=args.betas, eps=1e-08, weight_decay=args.weight_decay, amsgrad=False)
-
 
 log_nth = 100
 
@@ -171,7 +168,7 @@ if main_phase == 'not_eval':
                 if i_iter % log_nth == 0:
                     print(str(i_iter) + ':' + str(loss.data.cpu().numpy()))
 
-            #torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
+            torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPUSpatial/big_lr/model")
 
 
 #evaluation part - evaluate the saved model for layer13-14 on the testdata
@@ -181,7 +178,7 @@ sys.path.append('Pytorch-Deeplab')
 from deeplab.model import Res_Deeplab
 from collections import OrderedDict
 
-#function to evaluate
+#iou function to evaluate
 def get_iou(data_list, class_num, save_path=None):
     from multiprocessing import Pool
     from deeplab.metric import ConfusionMatrix
@@ -201,12 +198,13 @@ def get_iou(data_list, class_num, save_path=None):
 
 data_list = []
 if main_phase == 'eval':
-    #model = torch.load("/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
+    model = torch.load("/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
     for i_iter in range(len(all_testdata)):
         #save test output in batch of 1
+
         pred = Variable(interp(all_testdata[i_iter])).cuda()
         output = interp(model(pred))
-        #torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPUTest/predictions" + str(i_iter + 11) + ".pth")
+        torch.save(output, "/root/VOC12_After_b14/TrainBatch3TensorsGPUTest/predictions" + str(i_iter + 11) + ".pth")
 
         test_batch_b11 = torch.load("/root/VOC12_After_Deeplab_Test/batch" + str(i_iter + 11) + '.pth')
         image, label, size, name = test_batch_b11
