@@ -26,7 +26,7 @@ SIZE = 321
 DOWNSAMPLE_SIZE = 50
 PATHb12 = "/root/VOC12_After_b12/TrainBatch3TensorsGPUSpatial/predictions"
 PATHb11 = "/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/labels"
-BATCHES = 3525
+BATCHES = 2000 #3525
 TEST_BATCHES = 1449
 LEARNING_RATE = 1.9e-4
 BETAS = (0.9, 0.999)
@@ -106,6 +106,7 @@ all_testdata = []
 
 main_phase = 'not_eval'
 
+#importing data
 if main_phase == 'not_eval':
     for i in range(BATCHES):
         #load results from b12
@@ -124,6 +125,7 @@ if main_phase == 'not_eval':
             label = labels[j].unsqueeze(0)
             all_labels.append(label)
 
+#importing the data in such a manner because the first 10 files of the results of b12 of the testdata are corrupted
 i = 11
 while i < TEST_BATCHES:
     testdata = torch.load("/root/VOC12_After_b12/TrainBatch3TensorsGPUTest/predictions" + str(i) + '.pth')
@@ -181,11 +183,14 @@ if main_phase == 'not_eval':
             #torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
 
 
-sys.path.append('Pytorch-Deeplab') # needed for the next 2 lines
+#evaluation part - evaluate the saved model for layer13-14 on the testdata
+
+sys.path.append('Pytorch-Deeplab')
 
 from deeplab.model import Res_Deeplab
 from collections import OrderedDict
 
+#function to evaluate
 def get_iou(data_list, class_num, save_path=None):
     from multiprocessing import Pool
     from deeplab.metric import ConfusionMatrix
