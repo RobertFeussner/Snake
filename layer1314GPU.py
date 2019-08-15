@@ -28,7 +28,7 @@ PATHb12 = "/root/VOC12_After_b12/TrainBatch3TensorsGPUSpatial/predictions"
 PATHb11 = "/root/VOC12_After_Deeplab/TrainBatch3TensorsGPU/labels"
 BATCHES = 2000 #3525
 TEST_BATCHES = 1449
-LEARNING_RATE = 1.4e-4 #1.8e-4
+LEARNING_RATE = 1.8e-4
 BETAS = (0.9, 0.999)
 WEIGHT_DECAY = 0.0005
 IGNORE_LABEL = 255
@@ -95,7 +95,7 @@ all_predictions = []
 all_labels = []
 all_testdata = []
 
-main_phase = 'not_eval'
+main_phase = 'eval'
 
 #importing data
 if main_phase == 'not_eval':
@@ -116,7 +116,7 @@ if main_phase == 'not_eval':
             label = labels[j].unsqueeze(0)
             all_labels.append(label)
 
-#importing the data in such a manner because the first 10 files of the results of b12 of the testdata are corrupted
+#in case of having the first 10 files of b12 testdata corrupted, i=11. In case not, i=0
 i = 11
 while i < TEST_BATCHES:
     testdata = torch.load("/root/VOC12_After_b12/TrainBatch3TensorsGPUTest/predictions" + str(i) + '.pth')
@@ -171,7 +171,7 @@ if main_phase == 'not_eval':
                 if i_iter % log_nth == 0:
                     print(str(i_iter) + ':' + str(loss.data.cpu().numpy()))
 
-            #torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
+            torch.save(model, "/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
 
 
 #evaluation part - evaluate the saved model for layer13-14 on the testdata
@@ -199,10 +199,9 @@ def get_iou(data_list, class_num, save_path=None):
     aveJ, j_list, M = ConfM.jaccard()
     print('meanIOU: ' + str(aveJ) + '\n')
 
-main_phase = 'eval'
 data_list = []
 if main_phase == 'eval':
-    #model = torch.load("/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
+    model = torch.load("/root/VOC12_After_b14/TrainBatch3TensorsGPU/big_lr/model")
     for i_iter in range(len(all_testdata)):
         #save test output in batch of 1
         pred = Variable(interp(all_testdata[i_iter])).cuda()
